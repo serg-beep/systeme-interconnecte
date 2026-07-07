@@ -1,0 +1,2 @@
+Patch will modify tests to create and attach Permission models before actions.
+Files: AnnuaireFeatureTest.php, CollaborationFlowsTest.php
