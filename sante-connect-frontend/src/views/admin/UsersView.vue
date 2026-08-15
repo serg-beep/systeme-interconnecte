@@ -34,8 +34,7 @@
               <th>Utilisateur</th>
               <th>Email</th>
               <th>Poste</th>
-              <th>Roles</th>
-              <th>Permissions directes</th>
+              <th>Rôle</th>
               <th>Statut</th>
               <th>Actions</th>
             </tr>
@@ -53,14 +52,11 @@
               </td>
               <td data-label="Email" class="email">{{ u.email }}</td>
               <td data-label="Poste" class="poste">{{ u.poste || '-' }}</td>
-              <td data-label="Roles">
+              <td data-label="Rôle">
                 <select class="role-select" :value="u.roles?.[0]?.id || ''" @change="changerRole(u.id, $event.target.value)">
                   <option value="">Aucun role</option>
                   <option v-for="r in roles" :key="r.id" :value="r.id">{{ libelle(r.nom) }}</option>
                 </select>
-              </td>
-              <td data-label="Permissions directes">
-                <span class="pill-count">{{ u.permissions?.length || 0 }}</span>
               </td>
               <td data-label="Statut">
                 <span class="badge-actif" :class="u.actif ? 'actif' : 'inactif'">
@@ -72,6 +68,9 @@
                   <button class="btn-modifier" @click="ouvrirModal(u)">Modifier</button>
                   <button class="btn-toggle" :class="u.actif ? 'desactiver' : 'activer'" @click="toggleActif(u)">
                     {{ u.actif ? 'Desactiver' : 'Activer' }}
+                  </button>
+                  <button v-if="auth.hasRole('super_admin')" class="btn-toggle" :class="u.verifie ? 'desactiver' : 'activer'" @click="toggleVerifie(u)">
+                    {{ u.verifie ? 'Retirer badge' : 'Vérifier' }}
                   </button>
                 </div>
               </td>
@@ -121,14 +120,13 @@
         <div class="bloc-choix">
           <div class="bloc-head">
             <div>
-              <h4>Roles *</h4>
-              <p>Le role donne les permissions de base.</p>
+              <h4>Rôle *</h4>
+              <p>Chaque utilisateur possède un seul rôle.</p>
             </div>
-            <button class="btn-lien" type="button" @click="toutRole(false)" v-if="form.roles.length">Vider</button>
           </div>
           <div class="checks role-grid">
             <label v-for="r in roles" :key="r.id" class="check-card">
-              <input v-model="form.roles" type="checkbox" :value="r.id" />
+              <input v-model="form.role_id" type="radio" name="role" :value="r.id" />
               <span>
                 <strong>{{ libelle(r.nom) }}</strong>
                 <small>{{ r.description || 'Aucune description' }}</small>
@@ -149,7 +147,7 @@
             </div>
           </div>
           <div class="checks permission-grid">
-            <label v-for="p in permissions" :key="p.id" class="check-line">
+            <label v-for="p in permissionsDisponibles" :key="p.id" class="check-line">
               <input v-model="form.permissions" type="checkbox" :value="p.id" />
               <span>{{ libelle(p.nom) }}</span>
             </label>
@@ -201,20 +199,23 @@ const rechercheDebounced = useDebouncedRef(recherche)
 
 const form = ref(formVide())
 const estSuperAdmin = computed(() => auth.hasRole('super_admin'))
+const permissionsDisponibles = computed(() =>
+    permissions.value.filter(p => !['consulter_audit_tracabilite'].includes(p.nom))
+)
 
 const permissionsEffectives = computed(() => {
     const ids = new Set(form.value.permissions.map(Number))
-    const roleIds = new Set(form.value.roles.map(Number))
+    const roleIds = new Set([Number(form.value.role_id)])
 
     roles.value
         .filter(r => roleIds.has(Number(r.id)))
         .forEach(r => (r.permissions || []).forEach(p => ids.add(Number(p.id))))
 
-    return permissions.value.filter(p => ids.has(Number(p.id)))
+    return permissionsDisponibles.value.filter(p => ids.has(Number(p.id)))
 })
 
 function formVide() {
-    return { nom: '', prenom: '', email: '', telephone: '', poste: '', password: '', roles: [], permissions: [] }
+    return { nom: '', prenom: '', email: '', telephone: '', poste: '', password: '', role_id: '', permissions: [] }
 }
 
 function libelle(valeur) {
@@ -234,7 +235,7 @@ function ouvrirModal(u = null) {
         telephone: u.telephone || '',
         poste: u.poste || '',
         password: '',
-        roles: (u.roles || []).map(r => r.id),
+        role_id: u.roles?.[0]?.id || '',
         permissions: (u.permissions || []).map(p => p.id),
     } : formVide()
     erreur.value = ''
@@ -287,7 +288,7 @@ function toutRole(cocher) {
 }
 
 function toutPermission(cocher) {
-    form.value.permissions = cocher ? permissions.value.map(p => p.id) : []
+    form.value.permissions = cocher ? permissionsDisponibles.value.map(p => p.id) : []
 }
 
 async function sauvegarder() {
@@ -296,8 +297,8 @@ async function sauvegarder() {
         erreur.value = 'Nom, prenom et email obligatoires'
         return
     }
-    if (!form.value.roles.length) {
-        erreur.value = 'Selectionnez au moins un role'
+    if (!form.value.role_id) {
+        erreur.value = 'Sélectionnez un rôle'
         return
     }
     if (!userEdit.value && !form.value.password) {
@@ -313,7 +314,7 @@ async function sauvegarder() {
             email: form.value.email,
             telephone: form.value.telephone,
             poste: form.value.poste,
-            roles: form.value.roles.map(Number),
+            role_id: Number(form.value.role_id),
             permissions: estSuperAdmin.value ? form.value.permissions.map(Number) : [],
         }
         if (form.value.password) payload.password = form.value.password
@@ -347,7 +348,7 @@ async function changerRole(userId, roleId) {
     if (user && role) user.roles = [role]
 
     try {
-        await api.post(`/users/${userId}/roles`, { roles: [parseInt(roleId)] })
+        await api.post(`/users/${userId}/roles`, { role_id: parseInt(roleId) })
     } catch (e) {
         if (user) user.roles = previous
         window.dispatchEvent(new CustomEvent('app-error', { detail: e?.response?.data?.message || 'Une erreur est survenue' }))
@@ -365,6 +366,18 @@ async function toggleActif(u) {
         chargerStats()
     } catch (e) {
         u.actif = previous
+        window.dispatchEvent(new CustomEvent('app-error', { detail: e?.response?.data?.message || 'Une erreur est survenue' }))
+    }
+}
+
+async function toggleVerifie(u) {
+    const previous = u.verifie
+    u.verifie = !u.verifie
+
+    try {
+        await api.post(`/users/${u.id}/verifier`)
+    } catch (e) {
+        u.verifie = previous
         window.dispatchEvent(new CustomEvent('app-error', { detail: e?.response?.data?.message || 'Une erreur est survenue' }))
     }
 }

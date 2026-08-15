@@ -71,11 +71,36 @@ class FetchActualitesSante extends Command
         $nouveaux = 0;
         $erreurs  = 0;
 
-        foreach ($this->sources as $source) {
+        // Les sources sont interrogées en parallèle (au lieu d'une boucle séquentielle) :
+        // avec 7 sources externes et jusqu'à 15s de timeout chacune, un enchaînement
+        // séquentiel pouvait bloquer le serveur de dev (mono-thread) pendant plus de 20s.
+        $reponses = Http::pool(function ($pool) {
+            foreach ($this->sources as $i => $source) {
+                $pool->as((string) $i)
+                    ->timeout(15)
+                    ->withHeaders([
+                        'User-Agent'      => 'Mozilla/5.0 (compatible; SIS-HealthBot/1.0)',
+                        'Accept'          => 'application/rss+xml, application/xml, text/xml, */*',
+                        'Accept-Language' => 'fr-FR,fr;q=0.9',
+                    ])
+                    ->get($source['url']);
+            }
+        });
+
+        foreach ($this->sources as $i => $source) {
             $this->line("  → {$source['source']}");
 
             try {
-                $articles = $this->fetchRss($source['url']);
+                $reponse = $reponses[(string) $i];
+
+                if ($reponse instanceof \Throwable) {
+                    throw $reponse;
+                }
+                if (!$reponse->successful()) {
+                    throw new \RuntimeException("HTTP {$reponse->status()} pour {$source['url']}");
+                }
+
+                $articles = $this->parserRss($reponse->body());
 
                 foreach ($articles as $article) {
                     $total++;
@@ -148,25 +173,13 @@ class FetchActualitesSante extends Command
         }
     }
 
-    private function fetchRss(string $url): array
+    private function parserRss(string $body): array
     {
-        $response = Http::timeout(20)
-            ->withHeaders([
-                'User-Agent'      => 'Mozilla/5.0 (compatible; SIS-HealthBot/1.0)',
-                'Accept'          => 'application/rss+xml, application/xml, text/xml, */*',
-                'Accept-Language' => 'fr-FR,fr;q=0.9',
-            ])
-            ->get($url);
-
-        if (!$response->successful()) {
-            throw new \RuntimeException("HTTP {$response->status()} pour $url");
-        }
-
         libxml_use_internal_errors(true);
-        $xml = simplexml_load_string($response->body(), 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NOERROR);
+        $xml = simplexml_load_string($body, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NOERROR);
 
         if ($xml === false) {
-            throw new \RuntimeException("XML invalide pour $url");
+            throw new \RuntimeException('XML invalide');
         }
 
         // Namespace media pour les images

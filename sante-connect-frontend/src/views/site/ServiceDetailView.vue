@@ -38,6 +38,12 @@
                 <div class="ent-nom">{{ service.entreprise?.nom }}</div>
                 <div class="ent-type" v-if="service.entreprise?.type">{{ service.entreprise.type }}</div>
               </div>
+              <LikeButton
+                type="annuaire"
+                :id="service.id"
+                :liked="service.liked_by_me"
+                :count="service.likes_count || 0"
+              />
             </div>
 
           </div>
@@ -87,6 +93,15 @@
               </a>
             </section>
 
+          <!-- Avis -->
+          <section class="detail-card">
+            <AvisAnnuaire
+              :annuaire-id="service.id"
+              :avis="service.avis || []"
+              :moyenne-initiale="service.note_moyenne"
+            />
+          </section>
+
           <!-- Commentaires -->
           <section class="detail-card">
             <CommentairesService
@@ -107,6 +122,13 @@
                 <div class="ent-avatar-lg">{{ service.entreprise?.nom?.charAt(0) || '?' }}</div>
                 <div class="ent-nom-lg">{{ service.entreprise?.nom }}</div>
                 <div class="ent-type-lg" v-if="service.entreprise?.type">{{ service.entreprise.type }}</div>
+                <div class="ent-follow-wrap" v-if="service.entreprise">
+                  <FollowButton
+                    type="entreprise"
+                    :id="service.entreprise.id"
+                    :suivi="service.entreprise.suivi_par_moi"
+                  />
+                </div>
               </div>
               <div class="ent-infos">
                 <div class="ent-info-line" v-if="service.entreprise?.ville || service.ville">
@@ -188,6 +210,9 @@ import { useRoute } from 'vue-router'
 import { API_BASE } from '../../api/client.js'
 import { useAuthStore } from '../../stores/auth.js'
 import CommentairesService from '../../components/site/CommentairesService.vue'
+import AvisAnnuaire from '../../components/site/AvisAnnuaire.vue'
+import LikeButton from '../../components/site/LikeButton.vue'
+import FollowButton from '../../components/site/FollowButton.vue'
 
 function imageUrl(path) {
   if (!path) return ''
@@ -503,6 +528,8 @@ watch(() => route.params.id, id => charger(id))
   border-bottom: 1px solid #f1f5f9;
   margin-bottom: 16px;
 }
+
+.ent-follow-wrap { margin-top: 12px; }
 
 .ent-avatar-lg {
   width: 56px;

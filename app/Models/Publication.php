@@ -67,6 +67,11 @@ class Publication extends Model
                     ->where('statut', 'en_attente');
     }
 
+    public function likes()
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
     // ── Accesseurs ───────────────────────────────────
 
     // URL complète de l'image

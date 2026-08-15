@@ -21,10 +21,8 @@ return new class extends Migration {
             $table->boolean('actif')->default(true);
             $table->rememberToken();
             $table->timestamps();
-            $table->foreign('entreprise_id')
-                  ->references('id')
-                  ->on('entreprises')
-                  ->onDelete('cascade');
+            // La FK vers entreprises est ajoutée par une migration ultérieure
+            // (create_entreprises_table s'exécute après celle-ci).
         });
     }
     public function down(): void {

@@ -8,7 +8,7 @@
             <path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <h1>Santé Connect BF</h1>
+        <h1>Mediflow</h1>
         <p>Plateforme de coordination santé</p>
       </div>
 
@@ -36,8 +36,12 @@
         </button>
          <div class="lien-register">
              Pas encore inscrit ?
-          <router-link :to="{ name: 'register' }" class="lien">
+          <router-link :to="{ name: 'register-particulier' }" class="lien">
              Créer un compte
+            </router-link>
+          ·
+          <router-link :to="{ name: 'register' }" class="lien">
+             Espace entreprise
             </router-link>
         </div>
 
@@ -68,7 +72,7 @@ const errors  = reactive({ email: '', password: '' })
 const erreur  = ref('')
 const loading = ref(false)
 const brandLogoError = ref(false)
-const brandLogoSrc = '/logo-sante-connect.png'
+const brandLogoSrc = '/mediflow-logo.jpeg'
 
 const comptes = [
     { role: 'Super Admin',  email: 'moussa@sante.bf',   password: 'password' },
@@ -99,7 +103,7 @@ async function handleLogin() {
     erreur.value  = ''
     try {
         await auth.login({ email: form.email, password: form.password })
-        router.push({ name: 'dashboard' })
+        router.push(auth.hasRole('membre') ? { name: 'home' } : { name: 'dashboard' })
     } catch (e) {
         erreur.value = e.response?.data?.message || 'Email ou mot de passe incorrect'
     } finally {

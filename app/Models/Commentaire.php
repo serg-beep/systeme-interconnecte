@@ -10,6 +10,7 @@ class Commentaire extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'publication_id',
         'annuaire_id',
         'nom_visiteur',
@@ -42,7 +43,16 @@ class Commentaire extends Model
 
     // ── Relations ────────────────────────────────────
 
-    // La publication liée
+    public function annuaire()
+    {
+        return $this->belongsTo(Annuaire::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function publication()
     {
         return $this->belongsTo(Publication::class);

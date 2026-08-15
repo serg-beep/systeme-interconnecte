@@ -69,9 +69,9 @@ class RolesAndPermissionsSeeder extends Seeder
             ['nom' => 'voir_annuaire', 'description' => 'Consulter l\'annuaire', 'domaine' => 'annuaire'],
 
             // Paramètres
-            ['nom' => 'voir_parametres', 'description' => 'Voir les paramètres', 'domaine' => 'parametres'],
-            ['nom' => 'modifier_parametres_entreprise', 'description' => 'Modifier les paramètres de l\'entreprise', 'domaine' => 'parametres'],
-            ['nom' => 'modifier_parametres_systeme', 'description' => 'Modifier les paramètres du système', 'domaine' => 'parametres'],
+            ['nom' => 'gerer_moderations', 'description' => 'Gérer les modérations', 'domaine' => 'moderations'],
+            ['nom' => 'consulter_audit_tracabilite', 'description' => 'Consulter l\'audit et la traçabilité', 'domaine' => 'audit'],
+            ['nom' => 'gerer_actualites', 'description' => 'Gérer les actualités', 'domaine' => 'actualites'],
         ];
 
         foreach ($permissions as $perm) {

@@ -32,6 +32,7 @@ class User extends Authenticatable {
         'bio',
         'date_naissance',
         'actif',
+        'verifie',
     ];
 
     protected $hidden = [
@@ -43,6 +44,7 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
         'date_naissance'    => 'date',
         'actif'             => 'boolean',
+        'verifie'           => 'boolean',
     ];
 
     public function entreprise() {
@@ -77,13 +79,6 @@ class User extends Authenticatable {
         return $this->hasMany(Document::class);
     }
 
-    public function rapports() {
-        return $this->hasMany(Rapport::class);
-    }
-
-    public function evaluations() {
-        return $this->hasMany(Evaluation::class);
-    }
 
     public function clesAccesApi() {
         return $this->hasMany(Cles_acces_api::class);
@@ -113,15 +108,21 @@ class User extends Authenticatable {
     }
     // Dans App\Models\User.php, ajouter dans les relations existantes :
 
-public function publications()
+// Comptes/entreprises que CE user suit
+public function abonnements()
 {
-    return $this->hasMany(Publication::class);
+    return $this->hasMany(Abonnement::class, 'follower_id');
 }
 
-public function publicationsPubliques()
+// Utilisateurs qui suivent CE user
+public function abonnes()
 {
-    return $this->hasMany(Publication::class)
-                ->where('statut', 'publie')
-                ->where('visible_site', true);
+    return $this->morphMany(Abonnement::class, 'followable');
+}
+
+public function estSuiviPar(?User $user): bool
+{
+    if (!$user) return false;
+    return $this->abonnes()->where('follower_id', $user->id)->exists();
 }
 }

@@ -10,6 +10,7 @@ class RoleSeeder extends Seeder {
             ['nom' => 'admin',        'description' => 'Administrateur d\'une entreprise'],
             ['nom' => 'gestionnaire', 'description' => 'Gère les échanges et alertes'],
             ['nom' => 'operateur',    'description' => 'Consultation uniquement'],
+            ['nom' => 'membre',       'description' => 'Particulier du réseau social public, sans entreprise'],
         ];
         foreach ($roles as $role) {
             Role::firstOrCreate(['nom' => $role['nom']], $role);

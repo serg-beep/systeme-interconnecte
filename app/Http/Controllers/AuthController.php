@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Entreprise;
 use App\Models\Role;
 use App\Models\Invitation;
+use App\Models\HistoriqueAction;
 
 class AuthController extends Controller {
 
@@ -74,6 +75,40 @@ class AuthController extends Controller {
         ], 201);
     }
 
+    public function registerParticulier(Request $request) {
+        $data = $request->validate([
+            'nom'      => 'required|string',
+            'prenom'   => 'required|string',
+            'email'    => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
+            'telephone' => 'nullable|string',
+        ]);
+
+        $user = User::create([
+            'entreprise_id' => null,
+            'nom'           => $data['nom'],
+            'prenom'        => $data['prenom'],
+            'email'         => $data['email'],
+            'password'      => Hash::make($data['password']),
+            'telephone'     => $data['telephone'] ?? null,
+            'actif'         => true,
+        ]);
+
+        $role = Role::where('nom', 'membre')->first();
+        if ($role) {
+            $user->roles()->sync([$role->id]);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message'    => 'Inscription réussie',
+            'user'       => $user->load('roles.permissions', 'permissions', 'entreprise'),
+            'token'      => $token,
+            'token_type' => 'Bearer',
+        ], 201);
+    }
+
     public function login(Request $request) {
         $data = $request->validate([
             'email'    => 'required|email',
@@ -97,6 +132,15 @@ class AuthController extends Controller {
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        HistoriqueAction::create([
+            'user_id'       => $user->id,
+            'entreprise_id' => $user->entreprise_id,
+            'action'        => 'connexion',
+            'table_cible'   => 'users',
+            'enregistrement_id' => $user->id,
+            'ip_address'    => $request->ip(),
+        ]);
 
         return response()->json([
             'message'    => 'Connexion réussie',

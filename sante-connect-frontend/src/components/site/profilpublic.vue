@@ -1,61 +1,87 @@
 <template>
-  <div v-if="user">
-
-    <!-- Carte profil -->
-    <div class="bg-white rounded-xl shadow p-6 mb-6 flex items-center gap-4">
-      <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600">
-        {{ user.name.charAt(0).toUpperCase() }}
+  <div class="profil-page">
+    <div v-if="user" class="profil-card">
+      <div class="profil-avatar">
+        {{ (user.prenom?.charAt(0) || user.nom?.charAt(0) || '?').toUpperCase() }}
       </div>
-      <div>
-        <h1 class="text-xl font-bold text-gray-800">{{ user.name }}</h1>
-        <p class="text-sm text-gray-400">{{ user.email }}</p>
-      </div>
+      <h1 class="profil-nom">{{ user.prenom }} {{ user.nom }}</h1>
+      <p class="profil-email">{{ user.email }}</p>
     </div>
 
-    <!-- Publications -->
-    <h2 class="text-lg font-semibold text-gray-700 mb-4">Publications</h2>
-
-    <div
-      v-for="pub in publications"
-      :key="pub.id"
-      class="bg-white rounded-xl shadow p-5 mb-4 hover:shadow-md transition"
-    >
-      <router-link :to="`/publication/${pub.id}`">
-        <h3 class="font-semibold text-gray-800 hover:text-blue-600 mb-1">{{ pub.titre }}</h3>
-        <p class="text-sm text-gray-500">{{ pub.extrait }}</p>
-      </router-link>
-      <p class="text-xs text-gray-400 mt-2">{{ formatDate(pub.created_at) }}</p>
-    </div>
-
-    <p v-if="publications.length === 0" class="text-gray-400 text-sm">
-      Cet utilisateur n'a pas encore de publication.
-    </p>
-
+    <div v-else class="profil-loading">Chargement...</div>
   </div>
-
-  <div v-else class="text-center text-gray-400 py-10">Chargement...</div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { API_BASE } from '../../api/client.js'
 
-const route        = useRoute()
-const user         = ref(null)
-const publications = ref([])
+const route = useRoute()
+const user  = ref(null)
 
 async function charger() {
-  const res  = await fetch(`/api/site/profil/${route.params.id}`)
+  const res  = await fetch(`${API_BASE}/site/profil/${route.params.id}`)
   const data = await res.json()
-  user.value         = data.user
-  publications.value = data.publications.data
-}
-
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  })
+  user.value = data.user
 }
 
 onMounted(() => charger())
 </script>
+
+<style scoped>
+.profil-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+.profil-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  background: white;
+  border: 1px solid #e8edf4;
+  border-radius: 22px;
+  padding: 48px 40px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+  max-width: 380px;
+  width: 100%;
+}
+
+.profil-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a6fc4, #0d9488);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(26, 111, 196, 0.35);
+}
+
+.profil-nom {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 4px 0 0;
+}
+
+.profil-email {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.profil-loading {
+  color: #94a3b8;
+  font-size: 14px;
+}
+</style>

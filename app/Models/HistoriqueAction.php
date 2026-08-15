@@ -9,6 +9,8 @@ class HistoriqueAction extends Model
 {
     use HasFactory;
 
+    protected $table = 'audit_logs';
+
     protected $fillable = [
         'user_id','entreprise_id','action','table_cible',
         'enregistrement_id','anciennes_valeurs','nouvelles_valeurs','ip_address'

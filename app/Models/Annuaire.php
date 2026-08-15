@@ -38,4 +38,14 @@ class Annuaire extends Model
     {
         return $this->hasMany(Commentaire::class)->where('statut', 'approuve')->latest();
     }
+
+    public function likes()
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function avis()
+    {
+        return $this->hasMany(AvisService::class, 'annuaire_id')->where('statut', 'approuve')->latest();
+    }
 }

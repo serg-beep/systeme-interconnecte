@@ -8,7 +8,7 @@
             <path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.5" stroke-linecap="round" />
           </svg>
         </div>
-        <span class="logo-text">SanteConnect BF</span>
+        <span class="logo-text">Mediflow</span>
       </div>
 
       <div class="sidebar-entreprise">
@@ -63,14 +63,13 @@
     Annuaire
   </RouterLink>
 
+  <RouterLink v-if="auth.hasRole('admin') || auth.hasRole('super_admin')" to="/app/moderation" class="nav-item" active-class="active">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Modération
+  </RouterLink>
+
   <!-- Séparateur -->
   <div class="nav-separateur"></div>
-
-  <RouterLink to="/app/notifications"  class="nav-item" active-class="active">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    Notifications
-    <span v-if="nbNonLues > 0" class="nav-badge">{{ nbNonLues }}</span>
-  </RouterLink>
 
   <RouterLink to="/app/profil"         class="nav-item" active-class="active">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -84,10 +83,22 @@
     Actualités Santé
   </RouterLink>
 
+  <RouterLink v-if="auth.hasPermission('voir_entreprises')"
+    to="/app/admin/entreprises" class="nav-item nav-admin" active-class="active">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+    Admin — Entreprises
+  </RouterLink>
+
   <RouterLink v-if="auth.hasRole('admin') || auth.hasRole('super_admin')"
     to="/app/admin/users" class="nav-item nav-admin" active-class="active">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     Admin — Utilisateurs
+  </RouterLink>
+
+  <RouterLink v-if="auth.hasPermission('consulter_audit_tracabilite')"
+    to="/app/admin/audit" class="nav-item nav-admin" active-class="active">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="m7 15 3-3 3 2 5-6"/></svg>
+    Audit et traçabilité
   </RouterLink>
 </nav>
 
@@ -196,7 +207,7 @@ const errorToast = ref('')
 const previousUnreadCount = ref(0)
 const notificationsReady = ref(false)
 const brandLogoError = ref(false)
-const brandLogoSrc = '/logo-sante-connect.png'
+const brandLogoSrc = '/mediflow-logo.jpeg'
 
 const titres = {
     dashboard: 'Tableau de bord',
@@ -207,11 +218,14 @@ const titres = {
     partenaires: 'Partenaires',
     documents: 'Documents',
     annuaire: 'Annuaire',
+    moderation: 'Modération',
     'actualites-admin': 'Actualités Santé',
     'admin-users': 'Utilisateurs',
+    'admin-audit': 'Audit et traçabilité',
+    'admin-entreprises': 'Entreprises',
 }
 
-const titrePage = computed(() => titres[route.name] || 'SanteConnect')
+const titrePage = computed(() => titres[route.name] || 'Mediflow')
 
 const initiales = computed(() => {
     const nom = auth.entreprise?.nom || ''

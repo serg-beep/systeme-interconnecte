@@ -41,15 +41,6 @@ class Entreprise extends Model
     { return $this->hasMany(Document::class); }
     public function annuaires()
     { return $this->hasMany(Annuaire::class); }
-    public function evaluationsDonnees()
-     { return $this->hasMany(Evaluation::class, 'entreprise_id'); }
-    public function evaluationsRecues()
-     { return $this->hasMany(Evaluation::class, 'entreprise_evaluee_id'); }
-    public function Cles_acces_api()
-     { return $this->hasMany(Cles_acces_api::class); }
-    public function invitations() { return $this->hasMany(Invitation::class); }
-    public function rapports()
-    { return $this->hasMany(Rapport::class); }
     public function notifications()
      { return $this->hasManyThrough(Notification::class, User::class); }
     public function alertesRecues()
@@ -58,5 +49,15 @@ class Entreprise extends Model
                     ->withPivot('vue','date_vue','accuse_reception');
     }
 
+    public function abonnes()
+    {
+        return $this->morphMany(Abonnement::class, 'followable');
+    }
+
+    public function estSuiviPar(?User $user): bool
+    {
+        if (!$user) return false;
+        return $this->abonnes()->where('follower_id', $user->id)->exists();
+    }
 
 }

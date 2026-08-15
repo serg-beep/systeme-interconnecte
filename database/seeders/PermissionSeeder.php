@@ -14,14 +14,11 @@ class PermissionSeeder extends Seeder {
             'voir_reponses','creer_reponses',
             'voir_messages','creer_messages',
             'voir_documents','gerer_documents',
-            'voir_rapports','creer_rapports',
-            'voir_audit_logs',
+            'consulter_audit_tracabilite',
             'gerer_partenaires',
-            'gerer_parametres',
-            'voir_evaluations','creer_evaluations',
             'gerer_annuaires',
             'gerer_publications',
-            'gerer_token_apis',
+            'gerer_moderations','gerer_actualites',
         ];
 
         foreach ($permissions as $perm) {
@@ -34,9 +31,17 @@ class PermissionSeeder extends Seeder {
         $gestionnaire = Role::where('nom', 'gestionnaire')->first();
         $operateur   = Role::where('nom', 'operateur')->first();
 
-        $toutesPermissions = Permission::pluck('id')->toArray();
-
-        $superAdmin->permissions()->sync($toutesPermissions);
+        // Note : super_admin passe outre toute vérification de permission
+        // (voir CheckPermission::handle). La liste ci-dessous est donc
+        // purement indicative/affichage, pas une restriction d'accès réelle.
+        $superAdmin->permissions()->sync(
+            Permission::whereIn('nom', [
+                'voir_entreprises','gerer_entreprises',
+                'voir_users','gerer_users',
+                'gerer_moderations',
+                'consulter_audit_tracabilite',
+            ])->pluck('id')->toArray()
+        );
 
         $admin->permissions()->sync(
             Permission::whereIn('nom', [
@@ -47,10 +52,9 @@ class PermissionSeeder extends Seeder {
                 'voir_reponses','creer_reponses',
                 'voir_messages','creer_messages',
                 'voir_documents','gerer_documents',
-                'voir_rapports','creer_rapports',
-                'voir_audit_logs','gerer_partenaires',
-                'voir_evaluations','creer_evaluations',
-                'gerer_annuaires','gerer_publications','gerer_token_apis',
+                'consulter_audit_tracabilite','gerer_partenaires',
+                'gerer_annuaires','gerer_publications',
+                'gerer_moderations','gerer_actualites',
             ])->pluck('id')->toArray()
         );
 
@@ -62,7 +66,6 @@ class PermissionSeeder extends Seeder {
                 'voir_reponses','creer_reponses',
                 'voir_messages','creer_messages',
                 'voir_documents','gerer_documents',
-                'voir_evaluations','creer_evaluations',
                 'gerer_annuaires','gerer_publications',
             ])->pluck('id')->toArray()
         );
@@ -72,7 +75,7 @@ class PermissionSeeder extends Seeder {
                 'voir_alertes','voir_requetes',
                 'voir_demandes','voir_reponses',
                 'voir_messages',
-                'voir_documents','voir_evaluations',
+                'voir_documents',
             ])->pluck('id')->toArray()
         );
     }

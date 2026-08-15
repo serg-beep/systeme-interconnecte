@@ -7,7 +7,9 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('alerte_entreprise', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alerte_id')->constrained('alertes')->onDelete('cascade');
+            // La FK vers alertes est ajoutée par une migration ultérieure
+            // (create_alertes_table s'exécute après celle-ci).
+            $table->foreignId('alerte_id');
             $table->foreignId('entreprise_id')->constrained('entreprises')->onDelete('cascade');
             $table->boolean('vue')->default(false);
             $table->dateTime('date_vue')->nullable();

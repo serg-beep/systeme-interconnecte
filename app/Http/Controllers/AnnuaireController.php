@@ -33,6 +33,7 @@ class AnnuaireController extends Controller
     {
         $query = Annuaire::with('entreprise:id,nom,type,logo,ville,description')
             ->select('id','entreprise_id','service','description','disponible','categorie','cover_image','visit_url','tags','ville','etat_publication','vues','created_at')
+            ->withCount('likes')
             ->where('etat_publication', 'publie');
 
         // Recherche textuelle
@@ -74,6 +75,8 @@ class AnnuaireController extends Controller
         $perPage = min((int) $request->integer('per_page', 12), 50);
         $paginated = $query->paginate($perPage);
 
+        $this->attacherLikedByMe($paginated->getCollection(), 'annuaire');
+
         return response()->json($paginated);
     }
 
@@ -81,10 +84,20 @@ class AnnuaireController extends Controller
     {
         $service = Annuaire::with([
             'entreprise:id,nom,type,logo,ville,description,email,telephone,adresse',
-            'commentaires',
+            'commentaires.user:id,prenom,nom',
+            'avis.user:id,nom,prenom',
         ])
+            ->withCount('likes')
             ->where('etat_publication', 'publie')
             ->findOrFail($id);
+
+        $service->note_moyenne = round($service->avis->avg('note'), 1) ?: null;
+
+        $this->attacherLikedByMe(collect([$service]), 'annuaire');
+
+        if ($service->entreprise) {
+            $service->entreprise->suivi_par_moi = $service->entreprise->estSuiviPar(auth('sanctum')->user());
+        }
 
         // Incrémenter les vues
         $service->increment('vues');

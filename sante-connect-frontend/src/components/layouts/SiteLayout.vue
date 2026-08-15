@@ -7,15 +7,10 @@
 
         <!-- Logo -->
         <router-link to="/" class="logo">
-          <div class="logo-mark">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3v18M3 12h18" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="9.5" stroke="white" stroke-width="1.4" opacity="0.35"/>
-            </svg>
-          </div>
+          <div class="logo-mark"><img src="/mediflow-logo.jpeg" alt="Logo Mediflow" /></div>
           <div class="logo-texts">
-            <span class="logo-name">SIS — Santé</span>
-            <span class="logo-sub">Système Interconnecté</span>
+            <span class="logo-name">Mediflow</span>
+            <span class="logo-sub">La santé connectée</span>
           </div>
         </router-link>
 
@@ -29,7 +24,7 @@
         </nav>
 
         <!-- Auth -->
-        <div class="nav-auth">
+        <div class="nav-auth" v-if="!auth.isAuthenticated">
           <router-link to="/login"    class="btn-login">Connexion</router-link>
           <router-link to="/register" class="btn-signup">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
@@ -39,6 +34,11 @@
             </svg>
             S'inscrire gratuitement
           </router-link>
+        </div>
+        <div class="nav-auth" v-else>
+          <router-link to="/mes-abonnements" class="btn-login">Mes abonnements</router-link>
+          <router-link :to="`/profil-public/${auth.user?.id}`" class="btn-login">Mon profil</router-link>
+          <button class="btn-signup btn-deconnexion" @click="deconnexion">Déconnexion</button>
         </div>
 
       </div>
@@ -66,7 +66,7 @@
               </svg>
             </div>
             <div>
-              <div class="footer-logo-name">Système Interconnecté Santé</div>
+              <div class="footer-logo-name">Mediflow</div>
               <div class="footer-logo-sub">Burkina Faso · Afrique de l'Ouest</div>
             </div>
           </div>
@@ -99,7 +99,7 @@
         <!-- Informations -->
         <div class="footer-col">
           <div class="footer-col-title">Informations</div>
-          <router-link to="/a-propos" class="footer-link">À propos de SIS</router-link>
+          <router-link to="/a-propos" class="footer-link">À propos de Mediflow</router-link>
           <router-link to="/conditions" class="footer-link">Conditions d'utilisation</router-link>
           <router-link to="/confidentialite" class="footer-link">Politique de confidentialité</router-link>
           <a href="#" class="footer-link">Mentions légales</a>
@@ -120,7 +120,7 @@
 
       <div class="footer-bottom">
         <div class="footer-inner footer-bottom-inner">
-          <span class="footer-copy">© 2026 Système Interconnecté Santé — Burkina Faso. Tous droits réservés.</span>
+          <span class="footer-copy">© 2026 Mediflow — Burkina Faso. Tous droits réservés.</span>
           <div class="footer-bottom-links">
             <a href="#" class="footer-bottom-link">Conditions</a>
             <a href="#" class="footer-bottom-link">Confidentialité</a>
@@ -135,7 +135,16 @@
 </template>
 
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { useAuthStore } from '../../stores/auth.js'
+
+const auth   = useAuthStore()
+const router = useRouter()
+
+async function deconnexion() {
+  await auth.logout()
+  router.push('/')
+}
 </script>
 
 <style scoped>
@@ -163,6 +172,7 @@ import { RouterLink, RouterView } from 'vue-router'
   border-bottom: 1px solid rgba(226,232,240,0.9);
   box-shadow: 0 1px 0 rgba(15,23,42,0.04), 0 2px 12px rgba(15,23,42,0.04);
 }
+.logo-mark img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; background: white; }
 
 .nav-inner {
   max-width: 1200px; margin: 0 auto; padding: 0 28px;
@@ -219,6 +229,7 @@ import { RouterLink, RouterView } from 'vue-router'
   text-decoration: none; transition: all 0.18s;
 }
 .btn-signup:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(26,111,196,0.45); }
+.btn-deconnexion { border: none; cursor: pointer; font-family: inherit; }
 
 /* ══════════════════════════════════════════════════ */
 /* MAIN                                               */

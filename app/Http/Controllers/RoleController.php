@@ -11,13 +11,14 @@ class RoleController extends Controller
     // LISTE OPTIMISÉE (ULTRA LÉGÈRE)
     public function index()
     {
-        return Cache::remember('roles_list', 3600, function () {
-            return response()->json(
-                Role::select('id', 'nom', 'description')
-                    ->orderBy('nom')
-                    ->get()
-            );
+        $roles = Cache::remember('roles_list', 3600, function () {
+            return Role::select('id', 'nom', 'description')
+                ->with('permissions:id,nom')
+                ->orderBy('nom')
+                ->get();
         });
+
+        return response()->json($roles);
     }
 
     // CREATION

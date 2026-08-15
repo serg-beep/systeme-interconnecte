@@ -50,7 +50,6 @@ class EntrepriseController extends Controller {
                 'users.roles',
                 'annuaires',
                 'partenaires.entreprisePartenaire',
-                'evaluationsRecues',
             ])->withCount(['alertes','requetes','documents'])
               ->findOrFail($id)
         );

@@ -8,7 +8,7 @@
             <path d="M12 4v16M4 12h16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <h1>SantéConnect BF</h1>
+        <h1>Mediflow</h1>
         <p>Créer votre espace entreprise</p>
       </div>
 
@@ -265,6 +265,10 @@
         </div>
 
         <div v-if="etape < 4" class="lien-login">
+          Vous êtes un particulier ?
+          <a @click="$router.push('/register-particulier')" class="lien">Créer un compte simple</a>
+        </div>
+        <div v-if="etape < 4" class="lien-login">
           Déjà inscrit ?
           <a @click="$router.push('/login')" class="lien">Se connecter</a>
         </div>
@@ -287,7 +291,7 @@ const erreur  = ref('')
 const showPwd = ref(false)
 const logoPreview = ref('')
 const brandLogoError = ref(false)
-const brandLogoSrc = '/logo-sante-connect.png'
+const brandLogoSrc = '/mediflow-logo.jpeg'
 
 const form = reactive({
     entreprise_nom:         '',

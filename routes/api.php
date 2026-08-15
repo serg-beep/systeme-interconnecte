@@ -15,25 +15,24 @@ use App\Http\Controllers\PartenaireController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\HistoriqueActionController;
-use App\Http\Controllers\RapportController;
-use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\AnnuaireController;
-use App\Http\Controllers\Cles_Acces_ApiController;
 use App\Http\Controllers\RealtimeController;
-use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\ActualiteController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\AbonnementController;
+use App\Http\Controllers\AvisServiceController;
+use App\Http\Controllers\PublicationController;
 
 // ═══════════════════════════════════════════
 // ROUTES PUBLIQUES (sans connexion)
 // ═══════════════════════════════════════════
 
 Route::prefix('auth')->group(function () {
-    Route::post('register',   [AuthController::class, 'register'])->middleware('throttle:register');
+    Route::post('register',             [AuthController::class, 'register'])->middleware('throttle:register');
+    Route::post('register-particulier', [AuthController::class, 'registerParticulier'])->middleware('throttle:register');
     Route::post('login',      [AuthController::class, 'login'])->middleware('throttle:login');
-    Route::post('invitation', [InvitationController::class, 'accepter']);
 });
 
 // Annuaire public
@@ -45,11 +44,10 @@ Route::get('annuaire/{id}',         [AnnuaireController::class, 'showPublic']);
 
 // ✅ Site web public
 Route::prefix('site')->group(function () {
-    Route::get('stats',               [PublicationController::class, 'siteStats']);
-    Route::get('publications',        [PublicationController::class, 'indexPublic']);
-    Route::get('publications/{id}',   [PublicationController::class, 'showPublic']);
-    Route::get('profil/{id}',         [PublicationController::class, 'profilPublic']);
-    Route::post('commentaires',       [CommentaireController::class, 'store']);
+    Route::get('stats',                    [PublicationController::class, 'siteStats']);
+    Route::get('publications',             [PublicationController::class, 'indexPublic']);
+    Route::get('publications/{id}',        [PublicationController::class, 'showPublic']);
+    Route::get('profil/{id}',              [PublicationController::class, 'profilPublic']);
     Route::get('actualites',          [ActualiteController::class, 'indexPublic']);
     Route::get('actualites/{id}',     [ActualiteController::class, 'showPublic']);
 });
@@ -71,25 +69,26 @@ Route::middleware(['auth:sanctum', 'active.token'])->group(function () {
 
     // ── Entreprises ───────────────────────
     Route::get('entreprises', [EntrepriseController::class, 'index'])->middleware('permission:voir_entreprises');
-    Route::post('entreprises', [EntrepriseController::class, 'store'])->middleware('permission:gerer_entreprises');
+    Route::post('entreprises', [EntrepriseController::class, 'store'])->middleware('role:super_admin');
     Route::get('entreprises/{entreprise}', [EntrepriseController::class, 'show'])->middleware('permission:voir_entreprises');
-    Route::put('entreprises/{entreprise}', [EntrepriseController::class, 'update'])->middleware('permission:gerer_entreprises');
-    Route::delete('entreprises/{entreprise}', [EntrepriseController::class, 'destroy'])->middleware('permission:gerer_entreprises');
+    Route::put('entreprises/{entreprise}', [EntrepriseController::class, 'update'])->middleware('role:super_admin');
+    Route::delete('entreprises/{entreprise}', [EntrepriseController::class, 'destroy'])->middleware('role:super_admin');
 
-    Route::get('users',              [UserController::class, 'index'])->middleware('permission:voir_users');
-    Route::get('users/stats',        [UserController::class, 'stats'])->middleware('permission:voir_users');
-    Route::get('users/{id}',         [UserController::class, 'show'])->middleware('permission:voir_users');
-    Route::post('users',             [UserController::class, 'store'])->middleware('permission:gerer_users');
-    Route::put('users/{id}',         [UserController::class, 'update'])->middleware('permission:gerer_users');
-    Route::delete('users/{id}',      [UserController::class, 'destroy'])->middleware('permission:gerer_users');
-    Route::post('users/{id}/roles',  [UserController::class, 'assignRole'])->middleware('permission:gerer_users');
-    Route::post('users/{id}/permissions', [UserController::class, 'assignPermissions'])->middleware('permission:gerer_users');
-    Route::post('users/{id}/activer',[UserController::class, 'toggleActif'])->middleware('permission:gerer_users');
+    Route::get('users',              [UserController::class, 'index'])->middleware('role:admin,super_admin');
+    Route::get('users/stats',        [UserController::class, 'stats'])->middleware('role:admin,super_admin');
+    Route::get('users/{id}',         [UserController::class, 'show'])->middleware('role:admin,super_admin');
+    Route::post('users',             [UserController::class, 'store'])->middleware('role:super_admin,gestionnaire');
+    Route::put('users/{id}',         [UserController::class, 'update'])->middleware('role:super_admin,gestionnaire');
+    Route::delete('users/{id}',      [UserController::class, 'destroy'])->middleware('role:super_admin,gestionnaire');
+    Route::post('users/{id}/roles',  [UserController::class, 'assignRole'])->middleware('role:super_admin,gestionnaire');
+    Route::post('users/{id}/permissions', [UserController::class, 'assignPermissions'])->middleware('role:super_admin');
+    Route::post('users/{id}/activer',[UserController::class, 'toggleActif'])->middleware('role:super_admin,gestionnaire');
+    Route::post('users/{id}/verifier',[UserController::class, 'toggleVerifie'])->middleware('role:super_admin');
 
     // ── Rôles et Permissions ──────────────
     Route::apiResource('roles',       RoleController::class)->middleware('role:admin,super_admin');
-    Route::apiResource('permissions', PermissionController::class)->middleware('role:super_admin');
-    Route::post('roles/{id}/permissions', [RoleController::class, 'assignPermissions'])->middleware('role:super_admin');
+    Route::apiResource('permissions', PermissionController::class)->middleware('role:admin,super_admin');
+    Route::post('roles/{id}/permissions', [RoleController::class, 'assignPermissions'])->middleware('role:admin,super_admin');
 
     // ── Partenaires ───────────────────────
     Route::apiResource('partenaires', PartenaireController::class)->middleware('permission:gerer_partenaires');
@@ -158,30 +157,11 @@ Route::middleware(['auth:sanctum', 'active.token'])->group(function () {
     Route::delete('documents/{id}',          [DocumentController::class, 'destroy'])->middleware('permission:gerer_documents');
     Route::get('documents/{id}/telecharger', [DocumentController::class, 'telecharger'])->middleware('permission:voir_documents');
 
-    // ── Invitations ───────────────────────
-    Route::apiResource('invitations', InvitationController::class)->middleware('permission:gerer_users');
-    Route::post('invitations/{id}/renvoyer', [InvitationController::class, 'renvoyer'])->middleware('permission:gerer_users');
-
     // ── Historique Actions ────────────────
-    Route::get('historiqueActions/entreprise', [HistoriqueActionController::class, 'parEntreprise'])->middleware('permission:voir_audit_logs');
-    Route::get('historiqueActions/user/{id}',  [HistoriqueActionController::class, 'parUser'])->middleware('permission:voir_audit_logs');
-    Route::get('historiqueActions',            [HistoriqueActionController::class, 'index'])->middleware('permission:voir_audit_logs');
+    Route::get('historiqueActions/entreprise', [HistoriqueActionController::class, 'parEntreprise'])->middleware('permission:consulter_audit_tracabilite');
+    Route::get('historiqueActions/user/{id}',  [HistoriqueActionController::class, 'parUser'])->middleware('permission:consulter_audit_tracabilite');
+    Route::get('historiqueActions',            [HistoriqueActionController::class, 'index'])->middleware('permission:consulter_audit_tracabilite');
 
-    // ── Rapports ──────────────────────────
-    Route::get('rapports', [RapportController::class, 'index'])->middleware('permission:voir_rapports');
-    Route::post('rapports', [RapportController::class, 'store'])->middleware('permission:creer_rapports');
-    Route::get('rapports/{rapport}', [RapportController::class, 'show'])->middleware('permission:voir_rapports');
-    Route::put('rapports/{rapport}', [RapportController::class, 'update'])->middleware('permission:creer_rapports');
-    Route::delete('rapports/{rapport}', [RapportController::class, 'destroy'])->middleware('permission:creer_rapports');
-    Route::get('rapports/{id}/telecharger', [RapportController::class, 'telecharger'])->middleware('permission:voir_rapports');
-
-    // ── Evaluations ───────────────────────
-    Route::get('evaluations/entreprise/{id}', [EvaluationController::class, 'parEntreprise'])->middleware('permission:voir_evaluations');
-    Route::get('evaluations', [EvaluationController::class, 'index'])->middleware('permission:voir_evaluations');
-    Route::post('evaluations', [EvaluationController::class, 'store'])->middleware('permission:creer_evaluations');
-    Route::get('evaluations/{evaluation}', [EvaluationController::class, 'show'])->middleware('permission:voir_evaluations');
-    Route::put('evaluations/{evaluation}', [EvaluationController::class, 'update'])->middleware('permission:creer_evaluations');
-    Route::delete('evaluations/{evaluation}', [EvaluationController::class, 'destroy'])->middleware('permission:creer_evaluations');
 
     // ── Annuaire (annuaire/mes-services déclarée plus haut, hors groupe, voir ligne ~42) ──
     Route::post('annuaire',                                [AnnuaireController::class, 'store'])->middleware('permission:gerer_annuaires');
@@ -190,11 +170,6 @@ Route::middleware(['auth:sanctum', 'active.token'])->group(function () {
     Route::post('annuaire/{id}/disponibilite',             [AnnuaireController::class, 'toggleDisponible'])->middleware('permission:gerer_annuaires');
     Route::post('annuaire/{id}/image',                     [AnnuaireController::class, 'uploadImage'])->middleware('permission:gerer_annuaires');
 
-    // ── Clés d'accès API ──────────────────
-    Route::apiResource('cles-acces', Cles_Acces_ApiController::class)->middleware('permission:gerer_token_apis');
-    Route::post('cles-acces/{id}/desactiver', [Cles_Acces_ApiController::class, 'desactiver'])->middleware('permission:gerer_token_apis');
-    Route::post('cles-acces/{id}/regenerer',  [Cles_Acces_ApiController::class, 'regenerer'])->middleware('permission:gerer_token_apis');
-
     // ✅ Publications (logiciel)
     Route::get('publications',         [PublicationController::class, 'index']);
     Route::post('publications',        [PublicationController::class, 'store'])->middleware('permission:gerer_publications');
@@ -202,19 +177,42 @@ Route::middleware(['auth:sanctum', 'active.token'])->group(function () {
     Route::delete('publications/{id}', [PublicationController::class, 'destroy'])->middleware('permission:gerer_publications');
 
     // ✅ Commentaires modération (logiciel)
-    Route::get('commentaires',                 [CommentaireController::class, 'index'])->middleware('permission:gerer_publications');
-    Route::post('commentaires/{id}/approuver', [CommentaireController::class, 'approuver'])->middleware('permission:gerer_publications');
-    Route::post('commentaires/{id}/rejeter',   [CommentaireController::class, 'rejeter'])->middleware('permission:gerer_publications');
-    Route::delete('commentaires/{id}',         [CommentaireController::class, 'destroy'])->middleware('permission:gerer_publications');
+    Route::middleware('permission:gerer_moderations,gerer_publications')->group(function () {
+        Route::get('commentaires',                 [CommentaireController::class, 'index']);
+        Route::post('commentaires/{id}/approuver', [CommentaireController::class, 'approuver']);
+        Route::post('commentaires/{id}/rejeter',   [CommentaireController::class, 'rejeter']);
+        Route::delete('commentaires/{id}',         [CommentaireController::class, 'destroy']);
+    });
 
     // ── Actualités (admin) ────────────────────
-    Route::middleware('role:admin,super_admin')->group(function () {
+    Route::middleware('permission:gerer_actualites')->group(function () {
         Route::get('actualites',                  [ActualiteController::class, 'index']);
         Route::post('actualites/fetch',           [ActualiteController::class, 'fetchRss']);
         Route::post('actualites',                 [ActualiteController::class, 'store']);
         Route::post('actualites/{id}',            [ActualiteController::class, 'update']);
         Route::delete('actualites/{id}',          [ActualiteController::class, 'destroy']);
         Route::post('actualites/{id}/toggle',     [ActualiteController::class, 'togglePublie']);
+    });
+
+    // ── Réseau social : likes ──────────────
+    Route::post('likes', [LikeController::class, 'toggle']);
+
+    // ── Réseau social : abonnements ────────
+    Route::post('abonnements',           [AbonnementController::class, 'toggle']);
+    Route::get('mes-abonnements',        [AbonnementController::class, 'mesAbonnements']);
+
+    // ── Réseau social : avis publics sur les services ──
+    Route::post('annuaire/{id}/avis', [AvisServiceController::class, 'store']);
+
+    // ── Réseau social : commentaires (compte requis) ──
+    Route::post('site/commentaires', [CommentaireController::class, 'store']);
+
+    // ── Modération (commentaires + avis) ───
+    Route::middleware('permission:gerer_moderations,gerer_publications')->group(function () {
+        Route::get('avis',                 [AvisServiceController::class, 'index']);
+        Route::post('avis/{id}/approuver', [AvisServiceController::class, 'approuver']);
+        Route::post('avis/{id}/rejeter',   [AvisServiceController::class, 'rejeter']);
+        Route::delete('avis/{id}',         [AvisServiceController::class, 'destroy']);
     });
 
 });

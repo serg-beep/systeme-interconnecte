@@ -7,7 +7,9 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('permission_role', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            // La FK vers roles est ajoutée par une migration ultérieure
+            // (create_role_table [pluriel] s'exécute après celle-ci).
+            $table->foreignId('role_id');
             $table->foreignId('permission_id')->constrained('permissions')->onDelete('cascade');
             $table->timestamps();
         });
