@@ -20,7 +20,7 @@
       Aucune alerte — toutes les alertes ont été traitées ✓
     </div>
     <div v-else class="liste">
-      <div v-for="a in alertesFiltrees" :key="a.id" class="alerte-card">
+      <div v-for="a in alertesFiltrees" :key="a.id" :id="`alerte-${a.id}`" class="alerte-card" :class="{ 'mise-en-avant': a.id === highlightId }">
         <div class="alerte-top">
           <span class="badge-type" :class="a.type">{{ a.type.replace('_',' ') }}</span>
           <span class="badge-priorite" :class="a.priorite">{{ a.priorite }}</span>
@@ -93,7 +93,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import api from '../../api/client.js'
 import UiPagination from '../../components/ui/UiPagination.vue'
@@ -101,6 +102,8 @@ import SkeletonList from '../../components/ui/SkeletonList.vue'
 import { apiErrorMessage } from '../../composables/useApiError.js'
 
 const auth      = useAuthStore()
+const route     = useRoute()
+const highlightId = ref(null)
 const chargement = ref(true)
 const alertes   = ref([])
 const showModal = ref(false)
@@ -256,7 +259,21 @@ async function supprimer(id) {
     }
 }
 
-onMounted(charger)
+async function ouvrirDepuisNotification() {
+    const id = Number(route.query.id)
+    if (!id) return
+
+    await charger()
+    highlightId.value = id
+    await nextTick()
+    document.getElementById(`alerte-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => { if (highlightId.value === id) highlightId.value = null }, 4000)
+}
+
+onMounted(() => {
+    if (route.query.id) ouvrirDepuisNotification()
+    else charger()
+})
 </script>
 
 <style scoped>
@@ -269,7 +286,9 @@ onMounted(charger)
 .filtre-btn.active { background: #1D9E75; color: white; border-color: #1D9E75; }
 .liste { display: flex; flex-direction: column; gap: 12px; }
 .vide { text-align: center; padding: 40px; color: #9ca3af; font-size: 13px; background: white; border-radius: 12px; border: 1px solid #e5e7eb; }
-.alerte-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; }
+.alerte-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; transition: box-shadow 0.3s, border-color 0.3s; }
+.alerte-card.mise-en-avant { border-color: #1D9E75; box-shadow: 0 0 0 3px rgba(29,158,117,0.2); animation: pulse-highlight 1.6s ease-in-out 2; }
+@keyframes pulse-highlight { 0%, 100% { background: white; } 50% { background: #f0fdf9; } }
 .alerte-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .alerte-date { font-size: 11px; color: #9ca3af; }
 .alerte-actions { margin-left: auto; display: flex; gap: 6px; }

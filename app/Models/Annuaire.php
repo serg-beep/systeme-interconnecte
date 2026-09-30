@@ -13,6 +13,7 @@ class Annuaire extends Model
         'entreprise_id',
         'service',
         'description',
+        'telephone',
         'disponible',
         'categorie',
         'cover_image',

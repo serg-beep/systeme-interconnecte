@@ -15,7 +15,9 @@ class RequeteController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Requete::with(['entreprise:id,nom'])
+        $entrepriseId = $request->user()->entreprise_id;
+
+        $query = Requete::with(['entreprise:id,nom', 'reponses.entreprise:id,nom'])
             ->select('id', 'entreprise_id', 'user_id', 'titre', 'description', 'type', 'statut', 'created_at')
             ->when($request->filled('statut'), fn ($builder) => $builder->where('statut', $request->statut), fn ($builder) => $builder->where('statut', 'ouverte'))
             ->when($request->filled('type'), fn ($builder) => $builder->where('type', $request->type))
@@ -27,7 +29,13 @@ class RequeteController extends Controller
                         ->orWhere('description', 'like', '%'.$search.'%');
                 });
             })
-            ->when($request->boolean('sans_reponse', true), fn ($builder) => $builder->doesntHave('reponses'))
+            // Une requête sans réponse reste visible pour être traitée par le réseau ;
+            // mes propres requêtes restent visibles même une fois répondues, pour en suivre les réponses.
+            ->when($request->boolean('sans_reponse', true), function ($builder) use ($entrepriseId) {
+                $builder->where(function ($q) use ($entrepriseId) {
+                    $q->doesntHave('reponses')->orWhere('entreprise_id', $entrepriseId);
+                });
+            })
             ->latest();
 
         return $this->listResponse($query, $request, 30, 100);
@@ -58,7 +66,7 @@ class RequeteController extends Controller
                 'titre'      => 'Nouvelle requete publiee',
                 'message'    => 'Une nouvelle requete est disponible : '.$requete->titre,
                 'type'       => 'demande',
-                'lien'       => '/requetes/'.$requete->id,
+                'lien'       => '/app/requetes?id='.$requete->id,
                 'lu'         => false,
                 'created_at' => $now,
                 'updated_at' => $now,

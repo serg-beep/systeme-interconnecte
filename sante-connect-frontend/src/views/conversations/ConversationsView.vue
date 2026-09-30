@@ -99,12 +99,14 @@
 
 <script setup>
 import { computed, ref, onMounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import api from '../../api/client.js'
 import { useReferenceData } from '../../composables/useReferenceData.js'
 import UiPagination from '../../components/ui/UiPagination.vue'
 
 const auth    = useAuthStore()
+const route   = useRoute()
 const { entreprises, loadEntreprises } = useReferenceData()
 const chargement = ref(true)
 const chargementMessages = ref(false)
@@ -203,7 +205,25 @@ async function creer() {
     finally { envoi.value = false }
 }
 
-onMounted(charger)
+async function ouvrirDepuisNotification() {
+    const id = Number(route.query.id)
+    if (!id) return
+
+    await charger()
+    let conv = conversations.value.find(c => c.id === id)
+    if (!conv) {
+        try {
+            const { data } = await api.get(`/conversations/${id}`)
+            conv = data
+        } catch { return }
+    }
+    await ouvrirConv(conv)
+}
+
+onMounted(() => {
+    if (route.query.id) ouvrirDepuisNotification()
+    else charger()
+})
 </script>
 
 <style scoped>

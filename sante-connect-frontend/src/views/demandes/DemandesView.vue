@@ -17,7 +17,7 @@
       {{ onglet === 'recues' ? 'Aucune demande reçue' : 'Aucune demande envoyée' }}
     </div>
     <div v-else class="liste">
-      <div v-for="d in demandesFiltrees" :key="d.id" class="demande-card">
+      <div v-for="d in demandesFiltrees" :key="d.id" :id="`demande-${d.id}`" class="demande-card" :class="{ 'mise-en-avant': d.id === highlightId }">
         <div class="card-top">
           <span class="badge-type">{{ d.type }}</span>
           <span class="badge-statut" :class="d.statut">{{ d.statut.replace('_',' ') }}</span>
@@ -93,7 +93,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import api from '../../api/client.js'
 import UiPagination from '../../components/ui/UiPagination.vue'
@@ -101,7 +102,9 @@ import SkeletonList from '../../components/ui/SkeletonList.vue'
 import { useReferenceData } from '../../composables/useReferenceData.js'
 
 const auth    = useAuthStore()
+const route   = useRoute()
 const { entreprises, loadEntreprises } = useReferenceData()
+const highlightId = ref(null)
 const chargement = ref(true)
 const demandes = ref([])
 const page = ref(1)
@@ -241,7 +244,26 @@ async function annuler(id) {
     }
 }
 
-onMounted(charger)
+async function ouvrirDepuisNotification() {
+    const id = Number(route.query.id)
+    if (!id) return
+
+    try {
+        const { data } = await api.get(`/demandes/${id}`)
+        onglet.value = data.entreprise_source_id === auth.entreprise?.id ? 'envoyees' : 'recues'
+    } catch { /* on garde l'onglet courant si la demande est introuvable */ }
+
+    await charger()
+    highlightId.value = id
+    await nextTick()
+    document.getElementById(`demande-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => { if (highlightId.value === id) highlightId.value = null }, 4000)
+}
+
+onMounted(() => {
+    if (route.query.id) ouvrirDepuisNotification()
+    else charger()
+})
 onUnmounted(() => { if (abortCtrl) abortCtrl.abort() })
 </script>
 
@@ -256,7 +278,9 @@ onUnmounted(() => { if (abortCtrl) abortCtrl.abort() })
 .badge-nb { background: #E24B4A; color: white; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; }
 .liste { display: flex; flex-direction: column; gap: 12px; }
 .vide { text-align: center; padding: 40px; color: #9ca3af; font-size: 13px; background: white; border-radius: 12px; border: 1px solid #e5e7eb; }
-.demande-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; }
+.demande-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; transition: box-shadow 0.3s, border-color 0.3s; }
+.demande-card.mise-en-avant { border-color: #1D9E75; box-shadow: 0 0 0 3px rgba(29,158,117,0.2); animation: pulse-highlight 1.6s ease-in-out 2; }
+@keyframes pulse-highlight { 0%, 100% { background: white; } 50% { background: #f0fdf9; } }
 .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .card-date { font-size: 11px; color: #9ca3af; }
 .card-actions { margin-left: auto; display: flex; gap: 6px; }

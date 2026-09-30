@@ -33,6 +33,7 @@ const pages = {
     adminUsers: () => import('../views/admin/UsersView.vue'),
     adminAudit: () => import('../views/admin/AuditView.vue'),
     adminEntreprises: () => import('../views/admin/EntreprisesView.vue'),
+    adminRoles: () => import('../views/admin/RolesPermissionsView.vue'),
 }
 
 const routes = [
@@ -94,6 +95,7 @@ const routes = [
             { path: 'admin/users',       name: 'admin-users',       component: pages.adminUsers, meta: { adminOnly: true } },
             { path: 'admin/audit',       name: 'admin-audit',       component: pages.adminAudit, meta: { adminOnly: true } },
             { path: 'admin/entreprises', name: 'admin-entreprises', component: pages.adminEntreprises, meta: { adminOnly: true } },
+            { path: 'admin/roles',       name: 'admin-roles',       component: pages.adminRoles, meta: { adminOnly: true } },
         ]
     },
     { path: '/:pathMatch(.*)*', redirect: '/' }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Partenaire;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -53,6 +55,29 @@ class DocumentController extends Controller
             'taille' => round($size / 1024 / 1024, 2).' MB',
             'visibilite' => $data['visibilite'],
         ]);
+
+        $auteur = trim(auth()->user()->prenom.' '.auth()->user()->nom);
+        $lien   = '/app/documents?id='.$document->id;
+
+        $collegues = User::where('entreprise_id', auth()->user()->entreprise_id)
+            ->where('id', '!=', auth()->id())
+            ->get();
+        foreach ($collegues as $destinataire) {
+            $this->notifier($destinataire, 'document', 'Nouveau document', "{$auteur} a ajouté le document \"{$data['titre']}\".", $lien);
+        }
+
+        if ($data['visibilite'] === 'partenaires') {
+            $entrepriseId = auth()->user()->entreprise_id;
+            $partenaireEntrepriseIds = Partenaire::where('statut', 'accepte')
+                ->where(fn ($q) => $q->where('entreprise_id', $entrepriseId)->orWhere('entreprise_partenaire_id', $entrepriseId))
+                ->get()
+                ->map(fn ($p) => $p->entreprise_id == $entrepriseId ? $p->entreprise_partenaire_id : $p->entreprise_id);
+
+            $partenaireUsers = User::whereIn('entreprise_id', $partenaireEntrepriseIds)->get();
+            foreach ($partenaireUsers as $destinataire) {
+                $this->notifier($destinataire, 'document', 'Document partagé', "{$auteur} a partagé le document \"{$data['titre']}\" avec votre entreprise.", $lien);
+            }
+        }
 
         return response()->json($document->load('user', 'entreprise'), 201);
     }

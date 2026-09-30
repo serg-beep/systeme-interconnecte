@@ -61,9 +61,7 @@
         <div class="footer-brand">
           <div class="footer-logo-wrap">
             <div class="footer-logo-mark">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3v18M3 12h18" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
-              </svg>
+              <img src="/mediflow-logo.jpeg" alt="Logo Mediflow" />
             </div>
             <div>
               <div class="footer-logo-name">Mediflow</div>
@@ -255,7 +253,9 @@ async function deconnexion() {
   background: linear-gradient(135deg, #1a6fc4, #0d9488);
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 14px rgba(26,111,196,0.4); flex-shrink: 0;
+  overflow: hidden;
 }
+.footer-logo-mark img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; background: white; }
 
 .footer-logo-name { font-size: 13.5px; font-weight: 800; color: white; letter-spacing: -0.02em; line-height: 1.2; }
 .footer-logo-sub  { font-size: 10px; color: #64748b; letter-spacing: 0.03em; text-transform: uppercase; }

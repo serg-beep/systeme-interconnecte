@@ -15,6 +15,7 @@ class Publication extends Model
         'titre',
         'type_publication',
         'contenu',
+        'telephone',
         'image',
         'statut',
         'visible_site',

@@ -15,7 +15,7 @@ class AnnuaireController extends Controller
     public function index(Request $request)
     {
         $query = Annuaire::with('entreprise')
-            ->select('id','entreprise_id','service','description','disponible','categorie','cover_image','visit_url','tags','ville','etat_publication','vues','created_at')
+            ->select('id','entreprise_id','service','description','telephone','disponible','categorie','cover_image','visit_url','tags','ville','etat_publication','vues','created_at')
             ->where('entreprise_id', auth()->user()->entreprise_id)
             ->when($request->has('disponible'), fn ($b) => $b->where('disponible', $request->boolean('disponible')))
             ->when($request->filled('q'), function ($b) use ($request) {
@@ -32,7 +32,7 @@ class AnnuaireController extends Controller
     public function indexPublic(Request $request)
     {
         $query = Annuaire::with('entreprise:id,nom,type,logo,ville,description')
-            ->select('id','entreprise_id','service','description','disponible','categorie','cover_image','visit_url','tags','ville','etat_publication','vues','created_at')
+            ->select('id','entreprise_id','service','description','telephone','disponible','categorie','cover_image','visit_url','tags','ville','etat_publication','vues','created_at')
             ->withCount('likes')
             ->where('etat_publication', 'publie');
 
@@ -138,6 +138,7 @@ class AnnuaireController extends Controller
         $data = $request->validate([
             'service'          => 'required|string',
             'description'      => 'nullable|string',
+            'telephone'        => 'nullable|string|max:30',
             'disponible'       => 'boolean',
             'categorie'        => 'nullable|string|max:100',
             'cover_image'      => 'nullable|image|max:5120',
@@ -191,6 +192,7 @@ class AnnuaireController extends Controller
         $annuaire->update($request->validate([
             'service'          => 'sometimes|string',
             'description'      => 'nullable|string',
+            'telephone'        => 'nullable|string|max:30',
             'disponible'       => 'sometimes|boolean',
             'categorie'        => 'nullable|string|max:100',
             'cover_image'      => 'nullable|string',

@@ -55,7 +55,7 @@ class CollaborationFlowsTest extends TestCase
             'user_id' => $targetUser->id,
             'type' => 'alerte',
             'titre' => 'Nouvelle alerte : '.$alerte->titre,
-            'lien' => '/alertes/'.$alerte->id,
+            'lien' => '/app/alertes?id='.$alerte->id,
         ]);
 
         Sanctum::actingAs($targetUser);
@@ -114,7 +114,7 @@ class CollaborationFlowsTest extends TestCase
         $this->assertDatabaseHas('notifications', [
             'user_id' => $ownerUser->id,
             'type' => 'reponse',
-            'lien' => '/requetes/'.$requete->id,
+            'lien' => '/app/requetes?id='.$requete->id,
         ]);
 
         Sanctum::actingAs($ownerUser);

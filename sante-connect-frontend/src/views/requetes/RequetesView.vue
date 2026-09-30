@@ -10,7 +10,7 @@
       Aucune requête ouverte — tout est résolu ✓
     </div>
     <div v-else class="liste">
-      <div v-for="r in requetes" :key="r.id" class="requete-card">
+      <div v-for="r in requetes" :key="r.id" :id="`requete-${r.id}`" class="requete-card" :class="{ 'mise-en-avant': r.id === highlightId }">
         <div class="card-top">
           <span class="badge-type">{{ r.type }}</span>
           <span class="badge-statut" :class="r.statut">{{ r.statut }}</span>
@@ -98,13 +98,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import api from '../../api/client.js'
 import UiPagination from '../../components/ui/UiPagination.vue'
 import SkeletonList from '../../components/ui/SkeletonList.vue'
 
 const auth    = useAuthStore()
+const route   = useRoute()
+const highlightId = ref(null)
 const chargement = ref(true)
 const requetes = ref([])
 const page = ref(1)
@@ -228,7 +231,21 @@ async function envoyerReponse() {
     finally { envoi.value = false }
 }
 
-onMounted(charger)
+async function ouvrirDepuisNotification() {
+    const id = Number(route.query.id)
+    if (!id) return
+
+    await charger()
+    highlightId.value = id
+    await nextTick()
+    document.getElementById(`requete-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => { if (highlightId.value === id) highlightId.value = null }, 4000)
+}
+
+onMounted(() => {
+    if (route.query.id) ouvrirDepuisNotification()
+    else charger()
+})
 onUnmounted(() => { if (abortCtrl) abortCtrl.abort() })
 </script>
 
@@ -239,7 +256,9 @@ onUnmounted(() => { if (abortCtrl) abortCtrl.abort() })
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .liste { display: flex; flex-direction: column; gap: 12px; }
 .vide { text-align: center; padding: 40px; color: #9ca3af; font-size: 13px; background: white; border-radius: 12px; border: 1px solid #e5e7eb; }
-.requete-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; }
+.requete-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; transition: box-shadow 0.3s, border-color 0.3s; }
+.requete-card.mise-en-avant { border-color: #1D9E75; box-shadow: 0 0 0 3px rgba(29,158,117,0.2); animation: pulse-highlight 1.6s ease-in-out 2; }
+@keyframes pulse-highlight { 0%, 100% { background: white; } 50% { background: #f0fdf9; } }
 .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .card-date { font-size: 11px; color: #9ca3af; }
 .card-actions { margin-left: auto; display: flex; gap: 6px; }

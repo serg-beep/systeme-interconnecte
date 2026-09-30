@@ -109,7 +109,7 @@ class ConversationController extends Controller
                 'titre'      => 'Nouveau message',
                 'message'    => auth()->user()->prenom.' : '.substr($data['contenu'], 0, 80),
                 'type'       => 'message',
-                'lien'       => '/conversations/'.$id,
+                'lien'       => '/app/conversations?id='.$id,
                 'lu'         => false,
                 'created_at' => $now,
                 'updated_at' => $now,

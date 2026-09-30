@@ -10,7 +10,7 @@
       <div v-else-if="partenaires.length === 0" class="vide">Aucun partenariat</div>
       <template v-else>
         <div class="cards">
-          <div v-for="p in partenaires" :key="p.id" class="part-card">
+          <div v-for="p in partenaires" :key="p.id" :id="`partenaire-${p.id}`" class="part-card" :class="{ 'mise-en-avant': p.id === highlightId }">
             <div class="part-avatar">{{ autreEntreprise(p).nom?.[0] }}</div>
             <div class="part-nom">{{ autreEntreprise(p).nom }}</div>
             <div class="part-type">{{ autreEntreprise(p).type }}</div>
@@ -54,13 +54,16 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import api from '../../api/client.js'
 import { useReferenceData } from '../../composables/useReferenceData.js'
 import UiPagination from '../../components/ui/UiPagination.vue'
 
 const auth    = useAuthStore()
+const route   = useRoute()
+const highlightId = ref(null)
 const { entreprises, loadEntreprises } = useReferenceData()
 const chargement = ref(true)
 const partenaires = ref([])
@@ -141,7 +144,21 @@ async function repondre(id, statut) {
     }
 }
 
-onMounted(charger)
+async function ouvrirDepuisNotification() {
+    const id = Number(route.query.id)
+    if (!id) return
+
+    await charger()
+    highlightId.value = id
+    await nextTick()
+    document.getElementById(`partenaire-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => { if (highlightId.value === id) highlightId.value = null }, 4000)
+}
+
+onMounted(() => {
+    if (route.query.id) ouvrirDepuisNotification()
+    else charger()
+})
 </script>
 
 <style scoped>
@@ -151,7 +168,9 @@ onMounted(charger)
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .vide { text-align: center; padding: 40px; color: #9ca3af; background: white; border-radius: 12px; border: 1px solid #e5e7eb; font-size: 13px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-.part-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.part-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; transition: box-shadow 0.3s, border-color 0.3s; }
+.part-card.mise-en-avant { border-color: #1D9E75; box-shadow: 0 0 0 3px rgba(29,158,117,0.2); animation: pulse-highlight 1.6s ease-in-out 2; }
+@keyframes pulse-highlight { 0%, 100% { background: white; } 50% { background: #f0fdf9; } }
 .part-avatar { width: 52px; height: 52px; border-radius: 50%; background: #1D9E75; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; }
 .part-nom  { font-size: 14px; font-weight: 600; color: #1a1a2e; }
 .part-type { font-size: 12px; color: #9ca3af; text-transform: capitalize; }

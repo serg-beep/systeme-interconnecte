@@ -95,6 +95,12 @@
     Admin — Utilisateurs
   </RouterLink>
 
+  <RouterLink v-if="auth.hasRole('admin') || auth.hasRole('super_admin')"
+    to="/app/admin/roles" class="nav-item nav-admin" active-class="active">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.9.37 4.14 1.02"/></svg>
+    Admin — Rôles &amp; permissions
+  </RouterLink>
+
   <RouterLink v-if="auth.hasPermission('consulter_audit_tracabilite')"
     to="/app/admin/audit" class="nav-item nav-admin" active-class="active">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="m7 15 3-3 3 2 5-6"/></svg>
@@ -139,8 +145,7 @@
                   <div class="notif-title">{{ notification.titre }}</div>
                   <div class="notif-message">{{ notification.message }}</div>
                   <div class="notif-actions">
-                    <button v-if="!notification.lu" class="notif-link" @click="marquerLue(notification.id)">Lire</button>
-                    <button class="notif-link danger" @click="supprimerNotification(notification.id)">Supprimer</button>
+                    <button class="notif-link" @click="ouvrirNotification(notification)">Voir</button>
                   </div>
                 </div>
               </div>
@@ -193,7 +198,6 @@ const {
     notify,
     loadNotifications,
     replaceNotifications,
-    marquerNotificationLue,
     marquerToutesNotificationsLues,
     supprimerNotification: supprimerNotificationPartagee,
 } = useNotifications()
@@ -223,6 +227,7 @@ const titres = {
     'admin-users': 'Utilisateurs',
     'admin-audit': 'Audit et traçabilité',
     'admin-entreprises': 'Entreprises',
+    'admin-roles': 'Rôles et permissions',
 }
 
 const titrePage = computed(() => titres[route.name] || 'Mediflow')
@@ -263,16 +268,16 @@ function afficherErreur(event) {
     }, 5000)
 }
 
-async function marquerLue(id) {
-    await marquerNotificationLue(id)
+async function ouvrirNotification(notification) {
+    showNotifications.value = false
+    if (notification.lien) {
+        router.push(notification.lien)
+    }
+    await supprimerNotificationPartagee(notification.id)
 }
 
 async function toutMarquerLues() {
     await marquerToutesNotificationsLues()
-}
-
-async function supprimerNotification(id) {
-    await supprimerNotificationPartagee(id)
 }
 
 function ouvrirToast() {

@@ -8,9 +8,9 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Protection des données
         </div>
-        <h1 class="page-titre">Politique de confidentialité de SIS</h1>
+        <h1 class="page-titre">Politique de confidentialité de Mediflow</h1>
         <p class="page-sous-titre">
-          Chez SIS, la protection des données personnelles est une priorité. Cette politique explique
+          Chez Mediflow, la protection des données personnelles est une priorité. Cette politique explique
           quelles informations sont collectées, comment elles sont utilisées et comment elles sont protégées.
         </p>
         <div class="header-meta">
@@ -128,7 +128,7 @@
             <div>
               <h3 class="eng-titre">Notre engagement envers vous</h3>
               <p class="eng-texte">
-                Chez SIS, nous nous engageons à traiter vos données avec le plus grand respect
+                Chez Mediflow, nous nous engageons à traiter vos données avec le plus grand respect
                 et la plus grande transparence. Votre confiance est notre priorité absolue.
               </p>
               <div class="eng-actions">
@@ -163,7 +163,7 @@ const sections = [
   {
     id: 'collecte', num: '01', emoji: '📋', bg: '#dbeafe', color: '#1a6fc4',
     titre: 'Données collectées',
-    texte: 'Dans le cadre de l\'utilisation de la plateforme SIS, nous pouvons être amenés à collecter les données suivantes :',
+    texte: 'Dans le cadre de l\'utilisation de la plateforme Mediflow, nous pouvons être amenés à collecter les données suivantes :',
     liste: [
       'Nom et prénom de l\'utilisateur.',
       'Adresse e-mail pour la gestion du compte.',
@@ -179,16 +179,16 @@ const sections = [
     texte: 'Les données personnelles collectées sont utilisées exclusivement aux fins suivantes :',
     liste: [
       'Créer et gérer les comptes utilisateurs sur la plateforme.',
-      'Fournir l\'ensemble des services proposés par SIS.',
+      'Fournir l\'ensemble des services proposés par Mediflow.',
       'Assurer la sécurité et l\'intégrité des comptes.',
       'Répondre aux demandes d\'assistance et de support.',
-      'Améliorer les fonctionnalités et l\'expérience sur SIS.',
+      'Améliorer les fonctionnalités et l\'expérience sur Mediflow.',
     ],
   },
   {
     id: 'protection', num: '03', emoji: '🛡️', bg: '#f3f0ff', color: '#7c3aed',
     titre: 'Protection des données',
-    texte: 'SIS met en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, perte ou divulgation.',
+    texte: 'Mediflow met en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, perte ou divulgation.',
     alerte: {
       type: 'success',
       texte: 'Toutes les données sont transmises via des connexions sécurisées (HTTPS) et stockées dans des environnements protégés avec contrôle d\'accès strict.',
@@ -205,13 +205,13 @@ const sections = [
     ],
     alerte: {
       type: 'success',
-      texte: 'SIS ne vend jamais vos données personnelles à des tiers. C\'est un engagement ferme.',
+      texte: 'Mediflow ne vend jamais vos données personnelles à des tiers. C\'est un engagement ferme.',
     },
   },
   {
     id: 'cookies', num: '05', emoji: '🍪', bg: '#fefce8', color: '#ca8a04',
     titre: 'Cookies et technologies similaires',
-    texte: 'SIS peut utiliser des cookies et technologies similaires afin d\'améliorer l\'expérience utilisateur, mesurer l\'audience et optimiser les performances de la plateforme.',
+    texte: 'Mediflow peut utiliser des cookies et technologies similaires afin d\'améliorer l\'expérience utilisateur, mesurer l\'audience et optimiser les performances de la plateforme.',
     liste: [
       'Cookies de session pour maintenir votre connexion.',
       'Cookies de préférences pour mémoriser vos paramètres.',
@@ -222,7 +222,7 @@ const sections = [
   {
     id: 'conservation', num: '06', emoji: '🗄️', bg: '#ecfeff', color: '#0891b2',
     titre: 'Conservation des données',
-    texte: 'Les données personnelles sont conservées aussi longtemps que nécessaire pour fournir les services SIS ou respecter les obligations légales en vigueur. Lors de la suppression d\'un compte, les données associées sont effacées dans un délai raisonnable, sauf obligation légale de conservation.',
+    texte: 'Les données personnelles sont conservées aussi longtemps que nécessaire pour fournir les services Mediflow ou respecter les obligations légales en vigueur. Lors de la suppression d\'un compte, les données associées sont effacées dans un délai raisonnable, sauf obligation légale de conservation.',
   },
   {
     id: 'droits', num: '07', emoji: '⚖️', bg: '#eff6ff', color: '#1a6fc4',
@@ -242,18 +242,18 @@ const sections = [
   {
     id: 'securite', num: '08', emoji: '🔐', bg: '#f0fdf4', color: '#16a34a',
     titre: 'Sécurité du compte',
-    texte: 'Chaque utilisateur est invité à prendre les mesures suivantes pour protéger son compte sur SIS :',
+    texte: 'Chaque utilisateur est invité à prendre les mesures suivantes pour protéger son compte sur Mediflow :',
     liste: [
       'Utiliser un mot de passe fort et unique, non partagé avec d\'autres services.',
       'Ne jamais communiquer ses identifiants de connexion à des tiers.',
       'Se déconnecter après chaque session sur un appareil partagé.',
-      'Signaler immédiatement toute activité suspecte à l\'équipe SIS.',
+      'Signaler immédiatement toute activité suspecte à l\'équipe Mediflow.',
     ],
   },
   {
     id: 'modifications', num: '09', emoji: '🔄', bg: '#fff7ed', color: '#ea580c',
     titre: 'Modifications de la politique',
-    texte: 'Cette politique de confidentialité peut être mise à jour à tout moment afin de refléter l\'évolution des services SIS ou de répondre aux nouvelles obligations légales.',
+    texte: 'Cette politique de confidentialité peut être mise à jour à tout moment afin de refléter l\'évolution des services Mediflow ou de répondre aux nouvelles obligations légales.',
     alerte: {
       type: 'info',
       texte: 'En cas de modification significative, les utilisateurs seront informés par e-mail ou via une notification sur la plateforme.',
@@ -262,7 +262,7 @@ const sections = [
   {
     id: 'contact-conf', num: '10', emoji: '💬', bg: '#dbeafe', color: '#1a6fc4',
     titre: 'Contact',
-    texte: 'Pour toute question concernant la confidentialité ou vos données personnelles, ou pour exercer vos droits, les utilisateurs peuvent contacter directement l\'équipe SIS via la page Contact de la plateforme. Nous nous engageons à répondre dans les meilleurs délais.',
+    texte: 'Pour toute question concernant la confidentialité ou vos données personnelles, ou pour exercer vos droits, les utilisateurs peuvent contacter directement l\'équipe Mediflow via la page Contact de la plateforme. Nous nous engageons à répondre dans les meilleurs délais.',
   },
 ]
 

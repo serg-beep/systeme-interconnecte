@@ -8,9 +8,9 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           Cadre légal
         </div>
-        <h1 class="page-titre">Conditions d'utilisation de SIS</h1>
+        <h1 class="page-titre">Conditions d'utilisation de Mediflow</h1>
         <p class="page-sous-titre">
-          Bienvenue sur SIS. En utilisant notre plateforme, vous acceptez les présentes conditions
+          Bienvenue sur Mediflow. En utilisant notre plateforme, vous acceptez les présentes conditions
           d'utilisation. Nous vous invitons à les lire attentivement avant d'utiliser nos services.
         </p>
         <div class="header-meta">
@@ -93,16 +93,16 @@
           <div class="doc-footer-inner">
             <div class="doc-footer-logo">
               <div class="logo-mark">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="white" stroke-width="2.8" stroke-linecap="round"/></svg>
+                <img src="/mediflow-logo.jpeg" alt="Logo Mediflow" />
               </div>
-              <span>SIS — Système Interconnecté</span>
+              <span>Mediflow — La santé connectée</span>
             </div>
             <p class="doc-footer-texte">
-              Ces conditions ont été rédigées pour protéger les utilisateurs et assurer un usage équitable et sécurisé de la plateforme SIS au Burkina Faso.
+              Ces conditions ont été rédigées pour protéger les utilisateurs et assurer un usage équitable et sécurisé de la plateforme Mediflow au Burkina Faso.
             </p>
             <div class="doc-footer-actions">
               <router-link to="/contact" class="btn-contact">Nous contacter</router-link>
-              <router-link to="/a-propos" class="btn-apropos">En savoir plus sur SIS</router-link>
+              <router-link to="/a-propos" class="btn-apropos">En savoir plus sur Mediflow</router-link>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ const sections = [
   {
     id: 'objet', num: '01', emoji: '🎯', bg: '#dbeafe', color: '#1a6fc4',
     titre: 'Objet de la plateforme',
-    texte: 'SIS est une plateforme numérique permettant aux utilisateurs de publier, consulter et promouvoir des services, des annonces, des informations et des opportunités. Elle a pour vocation de connecter les acteurs économiques, institutionnels et individuels au Burkina Faso.',
+    texte: 'Mediflow est une plateforme numérique permettant aux utilisateurs de publier, consulter et promouvoir des services, des annonces, des informations et des opportunités. Elle a pour vocation de connecter les acteurs économiques, institutionnels et individuels au Burkina Faso.',
   },
   {
     id: 'compte', num: '02', emoji: '👤', bg: '#d1fae5', color: '#059669',
@@ -141,11 +141,11 @@ const sections = [
   {
     id: 'usage', num: '03', emoji: '✅', bg: '#f0fdf4', color: '#16a34a',
     titre: 'Utilisation acceptable',
-    texte: 'En utilisant SIS, les utilisateurs s\'engagent à :',
+    texte: 'En utilisant Mediflow, les utilisateurs s\'engagent à :',
     liste: [
       'Respecter toutes les lois et réglementations en vigueur au Burkina Faso.',
       'Publier uniquement des informations véridiques et vérifiables.',
-      'Respecter les autres membres de la communauté SIS.',
+      'Respecter les autres membres de la communauté Mediflow.',
       'Ne pas porter atteinte aux droits de propriété intellectuelle.',
       'Utiliser la plateforme à des fins légales et éthiques.',
     ],
@@ -153,7 +153,7 @@ const sections = [
   {
     id: 'interdits', num: '04', emoji: '🚫', bg: '#fef2f2', color: '#dc2626',
     titre: 'Contenus interdits',
-    texte: 'Il est strictement interdit de publier sur SIS les contenus suivants :',
+    texte: 'Il est strictement interdit de publier sur Mediflow les contenus suivants :',
     liste: [
       'Des contenus illégaux ou contraires aux lois burkinabè.',
       'Des contenus frauduleux, trompeurs ou mensongers.',
@@ -169,13 +169,13 @@ const sections = [
   {
     id: 'responsabilite', num: '05', emoji: '⚖️', bg: '#fff7ed', color: '#ea580c',
     titre: 'Responsabilité des utilisateurs',
-    texte: 'Chaque utilisateur est seul responsable des contenus qu\'il publie sur SIS. La plateforme ne saurait être tenue responsable des informations erronées, inexactes ou trompeuses publiées par ses membres.',
-    note: 'SIS agit uniquement en tant qu\'hébergeur de contenus et ne vérifie pas systématiquement l\'exactitude des informations publiées par les utilisateurs.',
+    texte: 'Chaque utilisateur est seul responsable des contenus qu\'il publie sur Mediflow. La plateforme ne saurait être tenue responsable des informations erronées, inexactes ou trompeuses publiées par ses membres.',
+    note: 'Mediflow agit uniquement en tant qu\'hébergeur de contenus et ne vérifie pas systématiquement l\'exactitude des informations publiées par les utilisateurs.',
   },
   {
     id: 'moderation', num: '06', emoji: '🛡️', bg: '#f3f0ff', color: '#7c3aed',
     titre: 'Modération',
-    texte: 'SIS se réserve le droit de modifier, suspendre ou supprimer tout contenu ou compte ne respectant pas les présentes conditions d\'utilisation, et ce, sans préavis ni justification obligatoire.',
+    texte: 'Mediflow se réserve le droit de modifier, suspendre ou supprimer tout contenu ou compte ne respectant pas les présentes conditions d\'utilisation, et ce, sans préavis ni justification obligatoire.',
     liste: [
       'Suppression de contenus non conformes.',
       'Suspension temporaire ou définitive d\'un compte.',
@@ -185,12 +185,12 @@ const sections = [
   {
     id: 'disponibilite', num: '07', emoji: '🖥️', bg: '#ecfeff', color: '#0891b2',
     titre: 'Disponibilité du service',
-    texte: 'SIS s\'efforce d\'assurer la disponibilité de la plateforme 24h/24 et 7j/7, mais ne garantit pas un accès ininterrompu. Des interruptions peuvent survenir pour maintenance, mise à jour ou pour des raisons techniques indépendantes de notre volonté.',
+    texte: 'Mediflow s\'efforce d\'assurer la disponibilité de la plateforme 24h/24 et 7j/7, mais ne garantit pas un accès ininterrompu. Des interruptions peuvent survenir pour maintenance, mise à jour ou pour des raisons techniques indépendantes de notre volonté.',
   },
   {
     id: 'modifications', num: '08', emoji: '🔄', bg: '#fefce8', color: '#ca8a04',
     titre: 'Modification des conditions',
-    texte: 'Les présentes conditions peuvent être modifiées à tout moment par l\'équipe SIS, afin d\'améliorer le service, d\'intégrer de nouvelles fonctionnalités ou de respecter les obligations légales en vigueur. Les utilisateurs seront informés de tout changement significatif.',
+    texte: 'Les présentes conditions peuvent être modifiées à tout moment par l\'équipe Mediflow, afin d\'améliorer le service, d\'intégrer de nouvelles fonctionnalités ou de respecter les obligations légales en vigueur. Les utilisateurs seront informés de tout changement significatif.',
     alerte: {
       type: 'info',
       texte: 'Nous vous recommandons de consulter régulièrement cette page pour rester informé des éventuelles modifications.',
@@ -199,7 +199,7 @@ const sections = [
   {
     id: 'contact', num: '09', emoji: '💬', bg: '#eff6ff', color: '#1a6fc4',
     titre: 'Contact',
-    texte: 'Pour toute question relative aux conditions d\'utilisation, ou pour signaler un contenu non conforme, les utilisateurs peuvent contacter directement l\'équipe SIS via la page Contact de la plateforme.',
+    texte: 'Pour toute question relative aux conditions d\'utilisation, ou pour signaler un contenu non conforme, les utilisateurs peuvent contacter directement l\'équipe Mediflow via la page Contact de la plateforme.',
   },
 ]
 
@@ -369,7 +369,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .logo-mark {
   width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
   background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
 }
+.logo-mark img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; background: white; }
 .doc-footer-texte { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.65; margin: 0 0 24px; max-width: 520px; }
 .doc-footer-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 

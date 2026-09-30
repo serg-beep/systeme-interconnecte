@@ -68,6 +68,12 @@
             </div>
           </header>
 
+          <!-- Contact -->
+          <div class="pub-contact" v-if="publication.telephone">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.37 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.29 6.29l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <a :href="`tel:${publication.telephone}`">{{ publication.telephone }}</a>
+          </div>
+
           <!-- Résumé mis en avant -->
           <div class="pub-resume" v-if="publication.extrait">
             {{ publication.extrait }}
@@ -258,6 +264,15 @@ watch(() => route.params.id, charger)
 /* ── PIED ARTICLE ─────────────────────────────── */
 .pub-footer { display: flex; align-items: center; justify-content: space-between; padding: 24px 0; border-top: 1px solid #e8edf4; margin-bottom: 48px; flex-wrap: wrap; gap: 16px; }
 .pub-entreprise { display: flex; align-items: center; gap: 12px; }
+.pub-contact {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px; margin-bottom: 24px;
+  background: #eff6ff; border: 1px solid #dbeafe; border-radius: 10px;
+  font-size: 14px; color: #1a6fc4; font-weight: 600;
+}
+.pub-contact svg { color: #1a6fc4; flex-shrink: 0; }
+.pub-contact a { color: inherit; text-decoration: none; }
+.pub-contact a:hover { text-decoration: underline; }
 .ent-avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #1a6fc4, #0d9488); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; }
 .ent-nom  { font-size: 14px; font-weight: 700; color: #0f172a; }
 .ent-type { font-size: 12px; color: #94a3b8; text-transform: capitalize; }

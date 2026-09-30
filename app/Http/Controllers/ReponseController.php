@@ -32,7 +32,7 @@ class ReponseController extends Controller {
                     'titre'   => 'Nouvelle reponse a votre requete',
                     'message' => 'Une entreprise a repondu a votre requete "'.$requete->titre.'".',
                     'type'    => 'reponse',
-                    'lien'    => '/requetes/'.$requete->id,
+                    'lien'    => '/app/requetes?id='.$requete->id,
                 ]);
             }
         }
@@ -46,7 +46,7 @@ class ReponseController extends Controller {
                     'titre'   => 'Nouvelle reponse a votre demande',
                     'message' => 'Une entreprise a repondu a votre demande "'.$demande->titre.'".',
                     'type'    => 'reponse',
-                    'lien'    => '/demandes/'.$demande->id,
+                    'lien'    => '/app/demandes?id='.$demande->id,
                 ]);
             }
         }

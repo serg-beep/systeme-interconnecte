@@ -121,17 +121,18 @@ watch(filtre, () => {
 })
 
 async function ouvrirNotif(n) {
-    if (!n.lien && n.lu) return
-    const wasUnread = !n.lu
-    n.lu = true
-    if (wasUnread) nbNonLues.value = Math.max(0, nbNonLues.value - 1)
+    const index = notifications.value.findIndex(item => item.id === n.id)
+    if (index >= 0) notifications.value.splice(index, 1)
+    if (!n.lu) nbNonLues.value = Math.max(0, nbNonLues.value - 1)
+
+    if (n.lien) router.push(n.lien)
 
     try {
-        await api.post(`/notifications/${n.id}/lue`)
+        await api.delete(`/notifications/${n.id}`)
     } catch (e) {
-        if (wasUnread) { n.lu = false; nbNonLues.value += 1 }
+        if (index >= 0) notifications.value.splice(index, 0, n)
+        if (!n.lu) nbNonLues.value += 1
     }
-    if (n.lien) router.push(n.lien)
 }
 
 async function toutMarquerLues() {

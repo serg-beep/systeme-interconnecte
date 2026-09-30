@@ -107,7 +107,7 @@ class ActualiteController extends Controller
     }
 
     // ── Admin : supprimer ──────────────────────────
-    public function destroy(int $id)
+    public function destroy($id)
     {
         $actualite = Actualite::findOrFail($id);
 
@@ -121,7 +121,7 @@ class ActualiteController extends Controller
     }
 
     // ── Admin : toggle publier/dépublier ───────────
-    public function togglePublie(int $id)
+    public function togglePublie($id)
     {
         $actualite = Actualite::findOrFail($id);
         $actualite->update(['publie' => !$actualite->publie]);
@@ -161,7 +161,7 @@ class ActualiteController extends Controller
     }
 
     // ── Public : détail ────────────────────────────
-    public function showPublic(int $id)
+    public function showPublic($id)
     {
         $actualite = Actualite::where('publie', true)->findOrFail($id);
         return response()->json($actualite);

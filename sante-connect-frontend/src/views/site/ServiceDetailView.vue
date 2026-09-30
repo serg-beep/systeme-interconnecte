@@ -139,6 +139,11 @@
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.37 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.29 6.29l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                   {{ service.entreprise.telephone }}
                 </div>
+                <div class="ent-info-line contact-service" v-if="service.telephone">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.37 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.29 6.29l1.42-1.42a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <a :href="`tel:${service.telephone}`">{{ service.telephone }}</a>
+                  <span class="contact-badge">Contact pour ce service</span>
+                </div>
               </div>
               <p class="ent-desc" v-if="service.entreprise?.description">{{ service.entreprise.description }}</p>
             </div>
@@ -559,6 +564,9 @@ watch(() => route.params.id, id => charger(id))
 }
 
 .ent-info-line svg { color: #94a3b8; flex-shrink: 0; }
+.ent-info-line.contact-service a { color: #1a6fc4; font-weight: 600; text-decoration: none; }
+.ent-info-line.contact-service a:hover { text-decoration: underline; }
+.contact-badge { font-size: 10px; font-weight: 600; color: #0d9488; background: #d1fae5; padding: 2px 7px; border-radius: 8px; margin-left: 2px; }
 
 .ent-desc {
   font-size: 12.5px;

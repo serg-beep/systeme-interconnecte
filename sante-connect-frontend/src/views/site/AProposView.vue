@@ -9,9 +9,9 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           À propos de nous
         </div>
-        <h1 class="hero-titre">À propos de <span class="accent">SIS</span></h1>
+        <h1 class="hero-titre">À propos de <span class="accent">Mediflow</span></h1>
         <p class="hero-texte">
-          SIS est une plateforme numérique qui facilite la découverte de services, d'entreprises,
+          Mediflow est une plateforme numérique qui facilite la découverte de services, d'entreprises,
           d'opportunités et de publications au Burkina Faso. Notre objectif est de rapprocher les
           utilisateurs des informations et services dont ils ont besoin.
         </p>
@@ -72,12 +72,12 @@
       </div>
     </section>
 
-    <!-- ═══ CE QUE PROPOSE SIS ════════════════════════ -->
+    <!-- ═══ CE QUE PROPOSE Mediflow ════════════════════════ -->
     <section class="section offres-section reveal">
       <div class="container">
         <div class="section-head">
           <div class="section-label">Notre plateforme</div>
-          <h2 class="section-titre">Ce que propose SIS</h2>
+          <h2 class="section-titre">Ce que propose Mediflow</h2>
           <p class="section-sous">Une solution complète pour connecter les acteurs du numérique au Burkina Faso.</p>
         </div>
 
@@ -113,15 +113,15 @@
       </div>
     </section>
 
-    <!-- ═══ POURQUOI CHOISIR SIS ══════════════════════ -->
+    <!-- ═══ POURQUOI CHOISIR Mediflow ══════════════════════ -->
     <section class="section pourquoi-section reveal">
       <div class="container">
         <div class="pourquoi-grid">
           <div class="pourquoi-left">
             <div class="section-label">Pourquoi nous ?</div>
-            <h2 class="section-titre">Pourquoi choisir SIS ?</h2>
+            <h2 class="section-titre">Pourquoi choisir Mediflow ?</h2>
             <p class="pourquoi-intro">
-              Nous avons conçu SIS pour répondre aux besoins réels des utilisateurs burkinabè
+              Nous avons conçu Mediflow pour répondre aux besoins réels des utilisateurs burkinabè
               et africains. Chaque fonctionnalité est pensée pour vous simplifier la vie.
             </p>
             <div class="pourquoi-cta">
@@ -152,7 +152,7 @@
           <div class="conclusion-icon">🚀</div>
           <h2 class="conclusion-titre">Construisons l'avenir ensemble</h2>
           <p class="conclusion-texte">
-            Chez SIS, nous croyons que la technologie peut rapprocher les personnes, les entreprises
+            Chez Mediflow, nous croyons que la technologie peut rapprocher les personnes, les entreprises
             et les opportunités. Rejoignez notre communauté et participez à la construction
             d'un écosystème numérique plus connecté.
           </p>

@@ -69,7 +69,7 @@ class DemandeController extends Controller
                 'titre'      => 'Nouvelle demande recue',
                 'message'    => 'Vous avez recu une demande : '.$demande->titre,
                 'type'       => 'demande',
-                'lien'       => '/demandes/'.$demande->id,
+                'lien'       => '/app/demandes?id='.$demande->id,
                 'lu'         => false,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -133,7 +133,7 @@ class DemandeController extends Controller
                 'titre' => 'Demande '.$nouveau,
                 'message' => 'Votre demande "'.$demande->titre.'" a ete '.$nouveau,
                 'type' => 'demande',
-                'lien' => '/demandes/'.$demande->id,
+                'lien' => '/app/demandes?id='.$demande->id,
             ]);
         }
 

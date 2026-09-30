@@ -67,7 +67,7 @@ class AlerteController extends Controller
                 'titre'      => 'Nouvelle alerte : '.$alerte->titre,
                 'message'    => $alerte->message,
                 'type'       => 'alerte',
-                'lien'       => '/alertes/'.$alerte->id,
+                'lien'       => '/app/alertes?id='.$alerte->id,
                 'lu'         => false,
                 'created_at' => $now,
                 'updated_at' => $now,

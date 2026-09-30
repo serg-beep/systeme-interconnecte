@@ -65,7 +65,7 @@ class PublicationController extends Controller
     }
 
     // ── Site public : une seule publication ──
-    public function showPublic(int $id)
+    public function showPublic($id)
     {
         $publication = Publication::with([
             'user.entreprise',
@@ -78,7 +78,7 @@ class PublicationController extends Controller
     }
 
     // ── Site public : profil d'un utilisateur + ses publications ──
-    public function profilPublic(int $userId)
+    public function profilPublic($userId)
     {
         $user = User::findOrFail($userId);
 
@@ -109,6 +109,7 @@ class PublicationController extends Controller
             'titre'            => 'required|string|max:255',
             'type_publication' => 'nullable|string|max:100',
             'contenu'          => 'required|string',
+            'telephone'        => 'nullable|string|max:30',
             'image'            => 'nullable|image|max:2048',
             'statut'           => 'nullable|in:publie,brouillon',
             'visible_site'     => 'nullable|boolean',
@@ -128,13 +129,14 @@ class PublicationController extends Controller
     }
 
     // ── Logiciel : modifier une publication ──
-    public function update(Request $request, int $id)
+    public function update(Request $request, $id)
     {
         $publication = Publication::where('user_id', auth()->id())->findOrFail($id);
 
         $data = $request->validate([
             'titre'        => 'sometimes|string|max:255',
             'contenu'      => 'sometimes|string',
+            'telephone'    => 'nullable|string|max:30',
             'image'        => 'nullable|image|max:2048',
             'statut'       => 'sometimes|in:publie,brouillon,archive',
             'visible_site' => 'sometimes|boolean',
@@ -150,7 +152,7 @@ class PublicationController extends Controller
     }
 
     // ── Logiciel : supprimer une publication ──
-    public function destroy(int $id)
+    public function destroy($id)
     {
         $publication = Publication::where('user_id', auth()->id())->findOrFail($id);
         $publication->delete();

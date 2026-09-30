@@ -29,6 +29,17 @@ class AvisServiceController extends Controller
             ]
         );
 
+        $auteur = trim(auth()->user()->prenom.' '.auth()->user()->nom);
+        foreach ($annuaire->entreprise?->users ?? [] as $destinataire) {
+            $this->notifier(
+                $destinataire,
+                'avis',
+                'Nouvel avis',
+                "{$auteur} a laissé un avis ({$data['note']}/5) sur \"{$annuaire->service}\".",
+                "/service/{$annuaire->id}"
+            );
+        }
+
         return response()->json([
             'message' => 'Avis publié.',
             'avis'    => $avis,

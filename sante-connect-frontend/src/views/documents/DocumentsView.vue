@@ -14,7 +14,7 @@
     <SkeletonList v-if="chargement" grid :count="6" />
     <div v-else-if="documentsCourants.length === 0" class="vide">Aucun document</div>
     <div v-else class="docs-grille">
-      <div v-for="d in documentsCourants" :key="d.id" class="doc-card">
+      <div v-for="d in documentsCourants" :key="d.id" :id="`document-${d.id}`" class="doc-card" :class="{ 'mise-en-avant': d.id === highlightId }">
         <div class="doc-top">
           <div class="doc-icone" :class="d.type">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
@@ -113,7 +113,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 import api from '../../api/client.js'
 import UiPagination from '../../components/ui/UiPagination.vue'
@@ -121,6 +122,8 @@ import SkeletonList from '../../components/ui/SkeletonList.vue'
 import { apiErrorMessage } from '../../composables/useApiError.js'
 
 const auth    = useAuthStore()
+const route   = useRoute()
+const highlightId = ref(null)
 const chargement = ref(true)
 const docs    = ref([])
 const docsPartages = ref([])
@@ -280,7 +283,30 @@ async function supprimer(id) {
     }
 }
 
-onMounted(charger)
+async function ouvrirDepuisNotification() {
+    const id = Number(route.query.id)
+    if (!id) return
+
+    try {
+        const { data } = await api.get(`/documents/${id}`)
+        if (data.entreprise_id === auth.entreprise?.id) {
+            await charger()
+        } else {
+            onglet.value = 'partages'
+            await chargerPartages()
+        }
+    } catch { await charger(); return }
+
+    highlightId.value = id
+    await nextTick()
+    document.getElementById(`document-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => { if (highlightId.value === id) highlightId.value = null }, 4000)
+}
+
+onMounted(() => {
+    if (route.query.id) ouvrirDepuisNotification()
+    else charger()
+})
 onUnmounted(() => { if (abortCtrl) abortCtrl.abort() })
 </script>
 
@@ -294,7 +320,9 @@ onUnmounted(() => { if (abortCtrl) abortCtrl.abort() })
 .onglets button.active { background: white; color: var(--color-text-primary); font-weight: 500; }
 .vide { text-align: center; padding: 40px; color: #9ca3af; font-size: 13px; background: white; border-radius: 12px; border: 1px solid #e5e7eb; }
 .docs-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.doc-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.doc-card { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; display: flex; flex-direction: column; gap: 12px; transition: box-shadow 0.3s, border-color 0.3s; }
+.doc-card.mise-en-avant { border-color: #1D9E75; box-shadow: 0 0 0 3px rgba(29,158,117,0.2); animation: pulse-highlight 1.6s ease-in-out 2; }
+@keyframes pulse-highlight { 0%, 100% { background: white; } 50% { background: #f0fdf9; } }
 .doc-top { display: flex; gap: 12px; }
 .doc-icone { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .doc-icone.rapport     { background: #E6F1FB; color: #0C447C; }

@@ -55,7 +55,7 @@ class AbonnementController extends Controller
                 'nouvel_abonne',
                 'Nouvel abonné',
                 $message,
-                $estUser ? "/profil-public/{$target->id}" : null
+                $estUser ? "/profil-public/{$target->id}" : '/app/annuaire'
             );
         }
 

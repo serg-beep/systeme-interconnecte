@@ -61,7 +61,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
           </template>
           <template #action>
-            <RouterLink to="/alertes" class="voir-tout">Voir tout</RouterLink>
+            <RouterLink to="/app/alertes" class="voir-tout">Voir tout</RouterLink>
           </template>
 
           <MiniLoader v-if="chargement" />
@@ -73,7 +73,7 @@
                 <div class="list-item__title">{{ alerte.titre }}</div>
                 <div class="list-item__meta">{{ alerte.entreprise?.nom || 'Entreprise non renseignee' }}</div>
               </div>
-              <RouterLink to="/alertes" class="item-action danger">Voir</RouterLink>
+              <RouterLink to="/app/alertes" class="item-action danger">Voir</RouterLink>
             </div>
           </div>
         </SectionCard>
@@ -83,7 +83,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
           </template>
           <template #action>
-            <RouterLink to="/demandes" class="voir-tout">Voir tout</RouterLink>
+            <RouterLink to="/app/demandes" class="voir-tout">Voir tout</RouterLink>
           </template>
 
           <MiniLoader v-if="chargement" />
@@ -95,7 +95,7 @@
                 <div class="list-item__title">{{ demande.titre }}</div>
                 <div class="list-item__meta">De : {{ demande.entreprise_source?.nom || 'Entreprise non renseignee' }}</div>
               </div>
-              <RouterLink to="/demandes" class="item-action primary">Traiter</RouterLink>
+              <RouterLink to="/app/demandes" class="item-action primary">Traiter</RouterLink>
             </div>
           </div>
         </SectionCard>
@@ -107,7 +107,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           </template>
           <template #action>
-            <RouterLink to="/requetes" class="voir-tout">Voir tout</RouterLink>
+            <RouterLink to="/app/requetes" class="voir-tout">Voir tout</RouterLink>
           </template>
 
           <MiniLoader v-if="chargement" />
@@ -128,12 +128,12 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           </template>
           <template #action>
-            <RouterLink to="/partenaires" class="voir-tout">Voir tout</RouterLink>
+            <RouterLink to="/app/partenaires" class="voir-tout">Voir tout</RouterLink>
           </template>
 
           <MiniLoader v-if="chargement" />
           <EmptyState v-else-if="partenairesApercu.length === 0" icon="+" message="Aucun partenaire">
-            <RouterLink to="/partenaires" class="lien-add">Ajouter</RouterLink>
+            <RouterLink to="/app/partenaires" class="lien-add">Ajouter</RouterLink>
           </EmptyState>
           <div v-else class="partenaires-grille">
             <div v-for="partenaire in partenairesApercu" :key="partenaire.id" class="partenaire-chip">

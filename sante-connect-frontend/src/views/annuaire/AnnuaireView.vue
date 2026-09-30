@@ -157,6 +157,11 @@
             <textarea v-model="form.contenu" rows="5" placeholder="Rédigez votre publication..." />
           </div>
 
+          <div class="champ">
+            <label>Téléphone</label>
+            <input v-model="form.telephone" type="tel" placeholder="Ex: +226 XX XX XX XX" />
+          </div>
+
           <div class="champ champ-check-wrap">
             <label class="champ-check">
               <input v-model="form.visible_site" type="checkbox" />
@@ -180,6 +185,11 @@
           <div class="champ">
             <label>Ville</label>
             <input v-model="form.ville" type="text" placeholder="Ex: Ouagadougou" />
+          </div>
+
+          <div class="champ">
+            <label>Téléphone</label>
+            <input v-model="form.telephone" type="tel" placeholder="Ex: +226 XX XX XX XX" />
           </div>
 
           <div class="champ full">
@@ -263,7 +273,7 @@ const imageFichier     = ref(null)
 const fileInput        = ref(null)
 
 const formVide = () => ({
-  titre: '', type_publication: '', contenu: '', statut: 'publie', visible_site: false,
+  titre: '', type_publication: '', contenu: '', telephone: '', statut: 'publie', visible_site: false,
   service: '', categorie: '', ville: '', description: '', visit_url: '', tagsTexte: '',
   etat_publication: 'publie', disponible: true,
 })
@@ -313,6 +323,7 @@ function ouvrirEditer(item) {
       service:          item.service,
       categorie:        item.categorie || '',
       ville:            item.ville || '',
+      telephone:        item.telephone || '',
       description:      item.description || '',
       visit_url:        item.visit_url || '',
       tagsTexte:        (item.tags || []).join(', '),
@@ -326,6 +337,7 @@ function ouvrirEditer(item) {
       titre:            item.titre,
       type_publication: item.type_publication || '',
       contenu:          item.contenu,
+      telephone:        item.telephone || '',
       statut:           item.statut,
       visible_site:     item.visible_site,
     }
@@ -386,6 +398,7 @@ async function creer() {
       fd.append('titre', form.value.titre)
       fd.append('type_publication', form.value.type_publication)
       fd.append('contenu', form.value.contenu)
+      fd.append('telephone', form.value.telephone)
       fd.append('statut', form.value.statut)
       fd.append('visible_site', form.value.visible_site ? '1' : '0')
       if (imageFichier.value) fd.append('image', imageFichier.value)
@@ -398,6 +411,7 @@ async function creer() {
       fd.append('service', form.value.service)
       fd.append('categorie', form.value.categorie)
       fd.append('ville', form.value.ville)
+      fd.append('telephone', form.value.telephone)
       fd.append('description', form.value.description)
       fd.append('visit_url', form.value.visit_url)
       fd.append('tags', JSON.stringify(tagsArray()))
@@ -434,6 +448,7 @@ async function sauvegarder() {
       fd.append('titre', form.value.titre)
       fd.append('type_publication', form.value.type_publication)
       fd.append('contenu', form.value.contenu)
+      fd.append('telephone', form.value.telephone)
       fd.append('statut', form.value.statut)
       fd.append('visible_site', form.value.visible_site ? '1' : '0')
       if (imageFichier.value) fd.append('image', imageFichier.value)
@@ -444,6 +459,7 @@ async function sauvegarder() {
         service:          form.value.service,
         categorie:        form.value.categorie,
         ville:            form.value.ville,
+        telephone:        form.value.telephone,
         description:      form.value.description,
         visit_url:        form.value.visit_url,
         tags:             tagsArray(),

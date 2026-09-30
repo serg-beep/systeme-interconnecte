@@ -80,14 +80,6 @@ class User extends Authenticatable {
     }
 
 
-    public function clesAccesApi() {
-        return $this->hasMany(Cles_acces_api::class);
-    }
-
-    public function invitations() {
-        return $this->hasMany(Invitation::class);
-    }
-
     public function historique_Status() {
         return $this->hasMany(Historique_Status::class);
     }
